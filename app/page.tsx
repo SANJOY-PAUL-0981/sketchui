@@ -1,4 +1,7 @@
+"use client"
+
 import Image from "next/image";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -13,11 +16,16 @@ import { Loader } from "@/components/ui/Loader";
 import { Avatar } from "@/components/ui/Avatar";
 import { Seperator } from "@/components/ui/Separator";
 import { Toggle } from "@/components/ui/Toggle";
+import { Tooltip } from "@/components/ui/Tooltip";
+import { HoverCard } from "@/components/ui/HoverCard";
+import { Calender } from "@/components/ui/Calender";
 
 import pf from "@/public/pf.png"
 import { NotebookBackground } from "@/components/ui/NotebookBackground";
 
 export default function Home() {
+  const [date, setDate] = useState<Date>()
+
   return (
     <main>
       <DoodleGridBackground className="font-family-gaegu text-lg">
@@ -182,6 +190,53 @@ export default function Home() {
             sliderColor="#fde047"
             borderColor="#111"
           />
+
+          <Tooltip
+            content="Click to copy"
+            variant="paper"
+            placement="top"
+            borderStyle="solid"
+            rotate={-1}
+          >
+            <button className="font-family-hand font-black underline decoration-wavy">
+              npx sanjoyxyz
+            </button>
+          </Tooltip>
+
+          <Calender value={date} onChange={setDate} showShadow borderStyle={"solid"} />
+          <Calender
+            variant="purple"
+            selectedColor="#fde047"
+            hoverColor="rgba(17,17,17,0.08)"
+          />
+
+          <HoverCard
+            placement="right"
+            variant="paper"
+            width={320}
+            content={
+              <div>
+                <p className="text-base font-black">OuraCode</p>
+                <p className="mt-2 text-sm text-black/70">
+                  Collaborative online code editor with rooms,
+                  execution and real-time sync.
+                </p>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-full border-2 border-black bg-white px-2 py-1 text-xs font-black">
+                    Next.js
+                  </span>
+                  <span className="rounded-full border-2 border-black bg-white px-2 py-1 text-xs font-black">
+                    Socket.io
+                  </span>
+                </div>
+              </div>
+            }
+          >
+            <span className="cursor-pointer underline decoration-wavy font-black">
+              OuraCode
+            </span>
+          </HoverCard>
 
           <Seperator
             orientation="vertical"
