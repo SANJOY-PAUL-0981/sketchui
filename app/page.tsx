@@ -1,65 +1,214 @@
 import Image from "next/image";
 
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Paper } from "@/components/ui/Paper";
+import { SketchBorder } from "@/components/ui/SketchBorder";
+import { Tape } from "@/components/ui/Tape";
+import { Toast } from "@/components/ui/Toast";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import { DoodleGridBackground } from "@/components/ui/DoodleGridBackground";
+import { Loader } from "@/components/ui/Loader";
+import { Avatar } from "@/components/ui/Avatar";
+import { Seperator } from "@/components/ui/Separator";
+import { Toggle } from "@/components/ui/Toggle";
+
+import pf from "@/public/pf.png"
+import { NotebookBackground } from "@/components/ui/NotebookBackground";
+
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main>
+      <DoodleGridBackground className="font-family-gaegu text-lg">
+        <h1>hi sketchui
+          TEST THE COMPONENTS FRIST BEFORE ADDING NEW ONES...
+        </h1>
+        <div className="flex flex-wrap">
+          <Badge
+            variant="sky"
+            shape="rounded-rectangle"
+            width={70}
+            borderColor="blue"
+            height={25}
+            fontSize={14}
+            paddingX={12}
+            radius={17}
+            roughOptions={{
+              roughness: 0.75,
+              bowing: 0.6,
+              strokeWidth: 2,
+              fillStyle: "solid",
+            }}
+          >Badge</Badge>
+
+          <Button
+            hoverTranslateY={-8}
+            hoverTranslateX={2}
+            hoverRotate={-2}
+            external
+            variant="purple"
+            width={190}
+            height={52}
+            hoverSketch={true}
+            roughOptions={{
+              seed: 67,
+              hoverHachureGap: 0.5,
+              hoverRoughness: 0.5,
+            }}>
+            Button
+          </Button>
+
+          <Card
+            variant="pink"
+            borderStyle="project-corner"
+            foldSide="top-left"
+            foldSize={24}
+            height={250}
+            width={250}
+            padding={22}
+            roughOptions={{
+              seed: 100,
+              roughness: 1.2,
+              bowing: 0.7,
+              strokeWidth: 1.6,
+              fillStyle: "hachure",
+              hachureGap: 8,
+              hachureAngle: -12,
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Card
+          </Card>
+
+          <Paper variant="cream"
+            edgeStyle="folded-corner"
+            foldSide="bottom-left"
+            height={130}
+            width={130}
+            padding={24}
+            rotate={-1}
+            borderColor="#111">
+            Paper
+          </Paper>
+
+          <SectionTitle
+            variant="green"
+            width={180}
+            height={54}
+            rotate={-5}
+            roughOptions={{
+              hachureGap: 0.5,
+            }}
+            titleClassName="text-xl max-md:text-3xl"
           >
-            Documentation
-          </a>
+            Section Title
+          </SectionTitle>
+
+          <SketchBorder shape="rounded-rectangle"
+            radius={20}
+            fillColor="#fffbf2"
+            transparent={false}
+            borderStyle="dashed"
+            minHeight={280}
+            padding={26}
+            width="25%"
+            roughOptions={{
+              seed: 10,
+              roughness: 0.75,
+              bowing: 0.7,
+              strokeWidth: 2,
+            }}
+            contentClassName="pl-10 max-md:pl-5 max-md:pr-5 max-md:py-5">
+            Sketch Border
+          </SketchBorder>
+
+          <Tape
+            variant="pink"
+            tapeStyle="side-torn"
+            width={95}
+            height={50}
+            rotate={-45}
+            className="absolute left-290 z-20 max-md:scale-90"
+          />
+
+
+          <Avatar size="lg" />
+          <Avatar
+            src={pf}
+            name="Sanjoy Paul"
+            size={90}
+            variant="paper"
+          />
+
+          <Avatar
+            name="Sanjoy Paul"
+            showInitials
+            size="xl"
+            variant="yellow"
+            showStatus
+            status="online"
+            hoverWiggle
+            roughOptions={{
+              roughness: 0.5
+            }}
+          />
+
+          <Toast
+            dottedShadow={false}
+            variant="bubble"
+            pointer="bottom-right"
+            color="paper"
+            width="20%"
+            height={150}
+            padding={40}
+            rotate={-1}
+            contentClassName="items-center justify-center text-center flex"
+          >
+            <p className="font-black -left-10 leading-snug text-xl max-md:text-sm max-sm:text-[16px]">
+              Hii its a toast!
+            </p>
+          </Toast>
+
+          <Loader />
+          <Loader type="spinner" motion="slower" />
+          <Loader type="dots" size="sm" color="black" motion="normal" />
+
+          <Toggle shape="round" roughness={0.5} />
+          <Toggle shape="rounded" roughness={0.5} />
+          <Toggle
+            roughness={0.5}
+            trackShape="rounded"
+            sliderShape="rounded"
+            sliderColor="#fde047"
+            borderColor="#111"
+          />
+
+          <Seperator
+            orientation="vertical"
+            length={160}
+            variant="wavy"
+            color="green"
+            opacity={0.7}
+          />
+          <Seperator
+            roughOptions={{
+              roughness: 0.5
+            }}
+          />
+          <Seperator variant="straight" roughOptions={{
+            roughness: 1.25
+          }} />
+          <Seperator variant="dashed" opacity={0.5} roughOptions={{
+            roughness: 0.5
+          }} />
+          <Seperator variant="curly" color="purple" amplitude={10} frequency={26} roughOptions={{
+            roughness: 0.5
+          }} />
+          <Seperator variant="wavy" color="black" opacity={0.35} roughOptions={{
+            roughness: 0.5
+          }} />
         </div>
-      </main>
-    </div>
+      </DoodleGridBackground>
+    </main>
   );
 }

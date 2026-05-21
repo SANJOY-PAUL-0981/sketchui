@@ -1,0 +1,295 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+import rough from "roughjs"
+import { cn } from "@/lib/utils"
+
+type SeperatorVariant = "dashed" | "curly" | "wavy" | "straight"
+
+type SeperatorOrientation = "horizontal" | "vertical"
+
+type SeperatorColor = "black" | "yellow" | "purple" | "green" | "pink" | "blue" | "gray" | string
+
+type RoughSeperatorOptions = {
+    seed?: number
+    strokeWidth?: number
+    roughness?: number
+    bowing?: number
+    dashGap?: number
+    dashLength?: number
+}
+
+type SeperatorProps = {
+    variant?: SeperatorVariant
+    orientation?: SeperatorOrientation
+    length?: number | string
+    thickness?: number
+    color?: SeperatorColor
+    opacity?: number
+    /**
+     - Controls wave/curly intensity.
+     */
+    amplitude?: number
+    /**
+     - Controls how many waves/curls appear.
+     */
+    frequency?: number
+
+    rotate?: number
+    className?: string
+    roughOptions?: RoughSeperatorOptions
+}
+
+const colorMap: Record<string, string> = {
+    black: "#111111",
+    yellow: "#fde047",
+    purple: "#c084fc",
+    green: "#86efac",
+    pink: "#f9a8d4",
+    blue: "#93c5fd",
+    gray: "#9ca3af",
+}
+
+function getColor(color: SeperatorColor) {
+    return colorMap[color] ?? color
+}
+
+function makeHorizontalWavyPath(
+    width: number,
+    centerY: number,
+    amplitude: number,
+    frequency: number
+) {
+    const segments = Math.max(2, frequency)
+    const step = width / segments
+
+    let path = `M 0 ${centerY}`
+
+    for (let i = 0; i < segments; i++) {
+        const x1 = i * step + step / 2
+        const x2 = (i + 1) * step
+        const y1 = i % 2 === 0 ? centerY - amplitude : centerY + amplitude
+        const y2 = centerY
+
+        path += ` Q ${x1} ${y1} ${x2} ${y2}`
+    }
+
+    return path
+}
+
+function makeVerticalWavyPath(
+    height: number,
+    centerX: number,
+    amplitude: number,
+    frequency: number
+) {
+    const segments = Math.max(2, frequency)
+    const step = height / segments
+
+    let path = `M ${centerX} 0`
+
+    for (let i = 0; i < segments; i++) {
+        const y1 = i * step + step / 2
+        const y2 = (i + 1) * step
+        const x1 = i % 2 === 0 ? centerX - amplitude : centerX + amplitude
+        const x2 = centerX
+
+        path += ` Q ${x1} ${y1} ${x2} ${y2}`
+    }
+
+    return path
+}
+
+function makeHorizontalCurlyPath(
+    width: number,
+    centerY: number,
+    amplitude: number,
+    frequency: number
+) {
+    const curls = Math.max(1, frequency)
+    const step = width / curls
+
+    let path = `M 0 ${centerY}`
+
+    for (let i = 0; i < curls; i++) {
+        const start = i * step
+        const mid = start + step / 2
+        const end = start + step
+
+        path += `
+            C ${start + step * 0.15} ${centerY - amplitude},
+              ${mid - step * 0.15} ${centerY - amplitude},
+              ${mid} ${centerY}
+            C ${mid + step * 0.15} ${centerY + amplitude},
+              ${end - step * 0.15} ${centerY + amplitude},
+              ${end} ${centerY}
+        `
+    }
+
+    return path
+}
+
+function makeVerticalCurlyPath(
+    height: number,
+    centerX: number,
+    amplitude: number,
+    frequency: number
+) {
+    const curls = Math.max(1, frequency)
+    const step = height / curls
+
+    let path = `M ${centerX} 0`
+
+    for (let i = 0; i < curls; i++) {
+        const start = i * step
+        const mid = start + step / 2
+        const end = start + step
+
+        path += `
+            C ${centerX - amplitude} ${start + step * 0.15},
+              ${centerX - amplitude} ${mid - step * 0.15},
+              ${centerX} ${mid}
+            C ${centerX + amplitude} ${mid + step * 0.15},
+              ${centerX + amplitude} ${end - step * 0.15},
+              ${centerX} ${end}
+        `
+    }
+
+    return path
+}
+
+export function Seperator({
+    variant = "wavy",
+    orientation = "horizontal",
+    length = "100%",
+    thickness = 28,
+    color = "black",
+    opacity = 1,
+    amplitude = 6,
+    frequency = 8,
+    rotate = 0,
+    className,
+    roughOptions,
+}: SeperatorProps) {
+    const svgRef = useRef<SVGSVGElement | null>(null)
+    const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        const svg = svgRef.current
+        const wrapper = wrapperRef.current
+
+        if (!svg || !wrapper) return
+
+        const rect = wrapper.getBoundingClientRect()
+
+        const width =
+            orientation === "horizontal" ? rect.width : thickness
+
+        const height =
+            orientation === "horizontal" ? thickness : rect.height
+
+        if (width <= 0 || height <= 0) return
+
+        svg.replaceChildren()
+
+        const rc = rough.svg(svg)
+
+        const stroke = getColor(color)
+        const strokeWidth = roughOptions?.strokeWidth ?? 2.2
+
+        const centerX = width / 2
+        const centerY = height / 2
+
+        let node: SVGGElement
+
+        if (variant === "straight" || variant === "dashed") {
+            const x1 = orientation === "horizontal" ? 0 : centerX
+            const y1 = orientation === "horizontal" ? centerY : 0
+            const x2 = orientation === "horizontal" ? width : centerX
+            const y2 = orientation === "horizontal" ? centerY : height
+
+            node = rc.line(x1, y1, x2, y2, {
+                seed: roughOptions?.seed ?? 33,
+                stroke,
+                strokeWidth,
+                roughness: roughOptions?.roughness ?? 1.4,
+                bowing: roughOptions?.bowing ?? 0.8,
+                strokeLineDash:
+                    variant === "dashed"
+                        ? [
+                            roughOptions?.dashLength ?? 10,
+                            roughOptions?.dashGap ?? 8,
+                        ]
+                        : undefined,
+            })
+        } else {
+            const path =
+                variant === "wavy"
+                    ? orientation === "horizontal"
+                        ? makeHorizontalWavyPath(
+                            width,
+                            centerY,
+                            amplitude,
+                            frequency
+                        )
+                        : makeVerticalWavyPath(
+                            height,
+                            centerX,
+                            amplitude,
+                            frequency
+                        )
+                    : orientation === "horizontal"
+                        ? makeHorizontalCurlyPath(
+                            width,
+                            centerY,
+                            amplitude,
+                            frequency
+                        )
+                        : makeVerticalCurlyPath(
+                            height,
+                            centerX,
+                            amplitude,
+                            frequency
+                        )
+
+            node = rc.path(path, {
+                seed: roughOptions?.seed ?? 44,
+                stroke,
+                strokeWidth,
+                roughness: roughOptions?.roughness ?? 1.5,
+                bowing: roughOptions?.bowing ?? 0.9,
+                fill: "none",
+            })
+        }
+
+        node.style.opacity = String(opacity)
+        svg.appendChild(node)
+    }, [
+        variant,
+        orientation,
+        thickness,
+        color,
+        opacity,
+        amplitude,
+        frequency,
+        roughOptions,
+    ])
+
+    return (
+        <div
+            ref={wrapperRef}
+            className={cn("relative shrink-0", className)}
+            style={{
+                width: orientation === "horizontal" ? length : thickness,
+                height: orientation === "horizontal" ? thickness : length,
+                rotate: `${rotate}deg`,
+            }}
+            aria-hidden="true"
+        >
+            <svg
+                ref={svgRef}
+                className="absolute inset-0 h-full w-full overflow-visible"
+            />
+        </div>
+    )
+}
