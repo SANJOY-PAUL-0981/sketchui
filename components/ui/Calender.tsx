@@ -12,27 +12,12 @@ import {
 import rough from "roughjs"
 import { cn } from "@/lib/utils"
 
-type CalenderVariant =
-    | "paper"
-    | "white"
-    | "yellow"
-    | "purple"
-    | "green"
-    | "pink"
-    | "blue"
-    | "gray"
-    | "orange"
-    | "red"
-    | "sky"
+type CalenderVariant = "paper" | "white" | "yellow" | "purple" | "green" | "pink" | "blue" | "gray" | "orange" | "red" | "sky"
 
 type CalenderShape = "rectangle" | "rounded-rectangle"
 type CalenderBorderStyle = "solid" | "dashed"
 
-type FoldSide =
-    | "top-right"
-    | "top-left"
-    | "bottom-right"
-    | "bottom-left"
+type FoldSide = "top-right" | "top-left" | "bottom-right" | "bottom-left"
 
 type PageAnimation = "slide" | "flip" | "fade" | "none"
 
@@ -41,14 +26,7 @@ type RoughCalenderOptions = {
     stroke?: string
     strokeWidth?: number
     fill?: string
-    fillStyle?:
-    | "solid"
-    | "hachure"
-    | "zigzag"
-    | "cross-hatch"
-    | "dots"
-    | "dashed"
-    | "zigzag-line"
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
     hachureGap?: number
     hachureAngle?: number
     roughness?: number
@@ -61,22 +39,17 @@ type CalenderProps = {
     value?: Date
     defaultValue?: Date
     onChange?: (date: Date) => void
-
     month?: Date
     defaultMonth?: Date
     onMonthChange?: (date: Date) => void
-
     minDate?: Date
     maxDate?: Date
     disabledDates?: Date[]
     isDateDisabled?: (date: Date) => boolean
-
     weekStartsOn?: 0 | 1
-
     variant?: CalenderVariant
     shape?: CalenderShape
     borderStyle?: CalenderBorderStyle
-
     borderColor?: string
     fillColor?: string
     textColor?: string
@@ -85,21 +58,15 @@ type CalenderProps = {
     hoverColor?: string
     foldedColor?: string
     shadowColor?: string
-
     showShadow?: boolean
-
     foldedCorner?: boolean
     foldSide?: FoldSide
     foldSize?: number
-
     pageAnimation?: PageAnimation
-
     radius?: number
     padding?: number
     width?: number | string
-
     roughOptions?: RoughCalenderOptions
-
     className?: string
     headerClassName?: string
     dayClassName?: string

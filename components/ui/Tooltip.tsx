@@ -10,18 +10,7 @@ import {
 import rough from "roughjs"
 import { cn } from "@/lib/utils"
 
-type TooltipVariant =
-    | "paper"
-    | "white"
-    | "yellow"
-    | "purple"
-    | "green"
-    | "pink"
-    | "blue"
-    | "gray"
-    | "orange"
-    | "red"
-    | "sky"
+type TooltipVariant = "paper" | "white" | "yellow" | "purple" | "green" | "pink" | "blue" | "gray" | "orange" | "red" | "sky"
 
 type TooltipPlacement = "top" | "bottom" | "left" | "right"
 type TooltipShape = "rectangle" | "rounded-rectangle"
@@ -32,14 +21,7 @@ type RoughTooltipOptions = {
     stroke?: string
     strokeWidth?: number
     fill?: string
-    fillStyle?:
-    | "solid"
-    | "hachure"
-    | "zigzag"
-    | "cross-hatch"
-    | "dots"
-    | "dashed"
-    | "zigzag-line"
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
     hachureGap?: number
     hachureAngle?: number
     roughness?: number

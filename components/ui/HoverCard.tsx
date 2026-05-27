@@ -10,28 +10,9 @@ import {
 import rough from "roughjs"
 import { cn } from "@/lib/utils"
 
-type HoverCardVariant =
-    | "paper"
-    | "white"
-    | "yellow"
-    | "purple"
-    | "green"
-    | "pink"
-    | "blue"
-    | "gray"
-    | "orange"
-    | "red"
-    | "sky"
+type HoverCardVariant = "paper" | "white" | "yellow" | "purple" | "green" | "pink" | "blue" | "gray" | "orange" | "red" | "sky"
 
-type HoverCardPlacement =
-    | "top"
-    | "bottom"
-    | "left"
-    | "right"
-    | "top-start"
-    | "top-end"
-    | "bottom-start"
-    | "bottom-end"
+type HoverCardPlacement = "top" | "bottom" | "left" | "right" | "top-start" | "top-end" | "bottom-start" | "bottom-end"
 
 type HoverCardShape = "rectangle" | "rounded-rectangle"
 type HoverCardBorderStyle = "solid" | "dashed"
@@ -41,14 +22,7 @@ type RoughHoverCardOptions = {
     stroke?: string
     strokeWidth?: number
     fill?: string
-    fillStyle?:
-    | "solid"
-    | "hachure"
-    | "zigzag"
-    | "cross-hatch"
-    | "dots"
-    | "dashed"
-    | "zigzag-line"
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
     hachureGap?: number
     hachureAngle?: number
     roughness?: number
@@ -60,39 +34,30 @@ type RoughHoverCardOptions = {
 type HoverCardProps = {
     children: ReactNode
     content: ReactNode
-
     variant?: HoverCardVariant
     placement?: HoverCardPlacement
     shape?: HoverCardShape
     borderStyle?: HoverCardBorderStyle
-
     borderColor?: string
     fillColor?: string
     textColor?: string
     shadowColor?: string
-
     width?: number | string
     minWidth?: number | string
     maxWidth?: number | string
-
     padding?: number
     radius?: number
     offset?: number
-
     openDelay?: number
     closeDelay?: number
     disabled?: boolean
-
     showShadow?: boolean
     showArrow?: boolean
     arrowSize?: number
-
     rotate?: number
     activeRotate?: number
     activeScale?: number
-
     roughOptions?: RoughHoverCardOptions
-
     className?: string
     triggerClassName?: string
     contentClassName?: string

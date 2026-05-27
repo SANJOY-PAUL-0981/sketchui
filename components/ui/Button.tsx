@@ -40,9 +40,9 @@ type ButtonProps = {
 
     hoverSketch?: boolean
 
-    /**
-     * Controls whole button hover movement.
-     * Example: hoverTranslateY={-4}, hoverTranslateX={0}
+    /*
+     - Controls whole button hover movement.
+     - Example: hoverTranslateY={-4}, hoverTranslateX={0}
      */
     hoverTranslateX?: number
     hoverTranslateY?: number
@@ -99,7 +99,6 @@ export function Button({
     className,
     textClassName,
     roughOptions,
-
     width = 180,
     height = 48,
     x = 5,
@@ -107,19 +106,15 @@ export function Button({
     fontSize = 18,
     paddingX = 18,
     fontWeight = "bold",
-
     hoverSketch = true,
-
     hoverTranslateX = 0,
     hoverTranslateY = -4,
     hoverRotate = -1,
     hoverScale = 1,
-
     enable3D = false,
     depth = 12,
     depthAngle = 35,
     depthFill = "#fffbf2",
-
     depthHachureGap = 5,
     depthHachureAngle = 85,
     depthRoughness,

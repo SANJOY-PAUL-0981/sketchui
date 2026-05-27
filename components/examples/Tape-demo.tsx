@@ -1,0 +1,26 @@
+import { Tape } from "@/components/ui/Tape"
+
+export function DemoTape() {
+    return (
+        <div className="flex flex-wrap items-center gap-8">
+            <Tape
+                variant="orange"
+                height={35}
+                roughOptions={{
+                    roughness: 1
+                }}
+            />
+
+            <Tape
+                height={35}
+                variant="gray"
+                tapeStyle="side-torn"
+                roughOptions={{
+                    fillStyle: "cross-hatch",
+                    hachureGap: 2,
+                    roughness: 2,
+                }}
+            />
+        </div>
+    )
+}

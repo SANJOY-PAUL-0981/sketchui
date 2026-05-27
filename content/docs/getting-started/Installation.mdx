@@ -1,0 +1,40 @@
+---
+title: Installation
+description: Install dependencies and manually copy SketchUi components.
+category: Getting Started
+status: ready
+order: 2
+---
+
+## Install dependencies
+
+```bash
+bun add clsx tailwind-merge roughjs
+```
+
+## Add utils
+
+Create this file:
+
+```txt
+lib/utils.ts
+```
+
+```ts
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+## Copy components
+
+Copy the component file you need into:
+
+```txt
+components/ui
+```
+
+CLI is coming soon.
