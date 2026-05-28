@@ -1,0 +1,380 @@
+---
+title: Toggle
+description: A fun sketch theme based toggle switch component.
+category: Components
+status: ready
+order: 17
+---
+
+<ComponentPreview name="toggle-demo" />
+
+## Code
+```tsx
+"use client"
+
+import { useEffect, useId, useRef, useState } from "react"
+import rough from "roughjs"
+import { cn } from "@/lib/utils"
+
+type ToggleShape = "round" | "rounded"
+type ToggleSize = "sm" | "md" | "lg" | number
+
+type ToggleProps = {
+    checked?: boolean
+    defaultChecked?: boolean
+    onCheckedChange?: (checked: boolean) => void
+    shape?: ToggleShape
+    trackShape?: ToggleShape
+    sliderShape?: ToggleShape
+    size?: ToggleSize
+    disabled?: boolean
+    checkedColor?: string
+    uncheckedColor?: string
+    /*
+     - Inner moving slider bg color
+     */
+    sliderColor?: string
+    borderColor?: string
+    /*
+     - Optional content inside slider
+     */
+    checkedIcon?: React.ReactNode
+    uncheckedIcon?: React.ReactNode
+    /*
+     - Optional accessible label
+     */
+    label?: string
+    roughness?: number
+    bowing?: number
+    strokeWidth?: number
+    seed?: number
+    className?: string
+    sliderClassName?: string
+}
+
+const sizeMap: Record<Exclude<ToggleSize, number>, number> = {
+    sm: 34,
+    md: 44,
+    lg: 56,
+}
+
+function getHeight(size: ToggleSize) {
+    return typeof size === "number" ? size : sizeMap[size]
+}
+
+function roundedRectPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+) {
+    const r = Math.min(radius, width / 2, height / 2)
+
+    return `
+        M ${x + r} ${y}
+        L ${x + width - r} ${y}
+        Q ${x + width} ${y} ${x + width} ${y + r}
+        L ${x + width} ${y + height - r}
+        Q ${x + width} ${y + height} ${x + width - r} ${y + height}
+        L ${x + r} ${y + height}
+        Q ${x} ${y + height} ${x} ${y + height - r}
+        L ${x} ${y + r}
+        Q ${x} ${y} ${x + r} ${y}
+        Z
+    `
+}
+
+export function Toggle({
+    checked,
+    defaultChecked = false,
+    onCheckedChange,
+
+    shape = "round",
+    trackShape,
+    sliderShape,
+
+    size = "md",
+    disabled = false,
+
+    checkedColor = "#86efac",
+    uncheckedColor = "#e5e7eb",
+    sliderColor = "#fffbf2",
+    borderColor = "#111",
+
+    checkedIcon,
+    uncheckedIcon,
+    label = "Toggle",
+
+    roughness = 1.35,
+    bowing = 0.8,
+    strokeWidth = 1.8,
+    seed = 77,
+
+    className,
+    sliderClassName,
+}: ToggleProps) {
+    const id = useId()
+    const trackSvgRef = useRef<SVGSVGElement | null>(null)
+    const sliderSvgRef = useRef<SVGSVGElement | null>(null)
+
+    const isControlled = checked !== undefined
+    const [internalChecked, setInternalChecked] = useState(defaultChecked)
+
+    const isChecked = isControlled ? checked : internalChecked
+
+    const finalTrackShape = trackShape ?? shape
+    const finalSliderShape = sliderShape ?? shape
+
+    const height = getHeight(size)
+    const width = Math.round(height * 1.9)
+
+    const padding = Math.max(4, height * 0.1)
+    const sliderSize = height - padding * 2
+
+    const sliderX = isChecked ? width - padding - sliderSize : padding
+
+    const trackRadius =
+        finalTrackShape === "round" ? height / 2 : Math.max(10, height * 0.28)
+
+    const sliderRadius =
+        finalSliderShape === "round"
+            ? sliderSize / 2
+            : Math.max(8, sliderSize * 0.28)
+
+    function handleToggle() {
+        if (disabled) return
+
+        const next = !isChecked
+
+        if (!isControlled) {
+            setInternalChecked(next)
+        }
+
+        onCheckedChange?.(next)
+    }
+
+    useEffect(() => {
+        const svg = trackSvgRef.current
+        if (!svg) return
+
+        svg.replaceChildren()
+
+        const rc = rough.svg(svg)
+
+        const fill = isChecked ? checkedColor : uncheckedColor
+
+        const node =
+            finalTrackShape === "round"
+                ? rc.path(
+                    roundedRectPath(
+                        2,
+                        2,
+                        width - 4,
+                        height - 4,
+                        height / 2
+                    ),
+                    {
+                        seed,
+                        stroke: borderColor,
+                        strokeWidth,
+                        fill,
+                        fillStyle: "solid",
+                        roughness,
+                        bowing,
+                    }
+                )
+                : rc.path(
+                    roundedRectPath(
+                        2,
+                        2,
+                        width - 4,
+                        height - 4,
+                        trackRadius
+                    ),
+                    {
+                        seed,
+                        stroke: borderColor,
+                        strokeWidth,
+                        fill,
+                        fillStyle: "solid",
+                        roughness,
+                        bowing,
+                    }
+                )
+
+        svg.appendChild(node)
+    }, [
+        isChecked,
+        checkedColor,
+        uncheckedColor,
+        borderColor,
+        width,
+        height,
+        finalTrackShape,
+        trackRadius,
+        roughness,
+        bowing,
+        strokeWidth,
+        seed,
+    ])
+
+    useEffect(() => {
+        const svg = sliderSvgRef.current
+        if (!svg) return
+
+        svg.replaceChildren()
+
+        const rc = rough.svg(svg)
+
+        const node =
+            finalSliderShape === "round"
+                ? rc.circle(sliderSize / 2, sliderSize / 2, sliderSize - 2, {
+                    seed: seed + 10,
+                    stroke: borderColor,
+                    strokeWidth,
+                    fill: sliderColor,
+                    fillStyle: "solid",
+                    roughness: roughness + 0.15,
+                    bowing,
+                })
+                : rc.path(
+                    roundedRectPath(
+                        1,
+                        1,
+                        sliderSize - 2,
+                        sliderSize - 2,
+                        sliderRadius
+                    ),
+                    {
+                        seed: seed + 10,
+                        stroke: borderColor,
+                        strokeWidth,
+                        fill: sliderColor,
+                        fillStyle: "solid",
+                        roughness: roughness + 0.15,
+                        bowing,
+                    }
+                )
+
+        svg.appendChild(node)
+    }, [
+        sliderSize,
+        finalSliderShape,
+        sliderRadius,
+        borderColor,
+        sliderColor,
+        roughness,
+        bowing,
+        strokeWidth,
+        seed,
+    ])
+
+    return (
+        <button
+            type="button"
+            role="switch"
+            aria-checked={isChecked}
+            aria-label={label}
+            disabled={disabled}
+            onClick={handleToggle}
+            className={cn(
+                "relative inline-flex shrink-0 items-center outline-none",
+                "transition-transform duration-150 ease-out",
+                "focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                "disabled:cursor-not-allowed disabled:opacity-60",
+                !disabled && "active:scale-[0.97]",
+                className
+            )}
+            style={{
+                width,
+                height,
+            }}
+        >
+            <svg
+                ref={trackSvgRef}
+                viewBox={`0 0 ${width} ${height}`}
+                className="absolute inset-0 h-full w-full"
+                aria-hidden="true"
+            />
+
+            <span
+                className={cn(
+                    "absolute top-1/2 flex items-center justify-center",
+                    "transition-[left,transform] duration-300 ease-out",
+                    sliderClassName
+                )}
+                style={{
+                    width: sliderSize,
+                    height: sliderSize,
+                    left: sliderX,
+                    transform: "translateY(-50%)",
+                }}
+            >
+                <svg
+                    ref={sliderSvgRef}
+                    viewBox={`0 0 ${sliderSize} ${sliderSize}`}
+                    className="absolute inset-0 h-full w-full overflow-visible"
+                    aria-hidden="true"
+                />
+
+                <span className="relative z-10 flex items-center justify-center text-black">
+                    {isChecked ? checkedIcon : uncheckedIcon}
+                </span>
+            </span>
+
+            <input
+                id={id}
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleToggle}
+                disabled={disabled}
+                className="sr-only"
+                tabIndex={-1}
+            />
+        </button>
+    )
+}
+```
+
+## Usage
+```tsx
+    <Toggle />
+```
+
+## Props
+| Prop | Type | Default | Description |
+|--------|--------|--------|--------|
+| `checked` | boolean | - | Controlled checked state of the toggle. |
+| `defaultChecked` | boolean | `false` | Initial checked state for uncontrolled mode. |
+| `onCheckedChange` | `(checked: boolean) => void` | - | Called when the toggle state changes. |
+| `shape` | ToggleShape | `"round"` | Controls the overall toggle appearance. |
+| `trackShape` | ToggleShape | - | Overrides the track shape. |
+| `sliderShape` | ToggleShape | - | Overrides the slider shape. |
+| `size` | ToggleSize | `"md"` | Controls the size of the toggle. |
+| `disabled` | boolean | `false` | Disables user interaction. |
+| `checkedColor` | string | `"#86efac"` | Track color when checked. |
+| `uncheckedColor` | string | `"#e5e7eb"` | Track color when unchecked. |
+| `sliderColor` | string | `"#fffbf2"` | Color of the toggle slider. |
+| `borderColor` | string | `"#111"` | Border color of the toggle. |
+| `checkedIcon` | ReactNode | - | Icon displayed when checked. |
+| `uncheckedIcon` | ReactNode | - | Icon displayed when unchecked. |
+| `label` | string | `"Toggle"` | Accessible label for the toggle. |
+| `roughness` | number | `1.35` | Controls RoughJS sketch roughness. |
+| `bowing` | number | `0.8` | Controls the amount of line bowing. |
+| `strokeWidth` | number | `1.8` | Stroke width of the sketch outline. |
+| `seed` | number | `77` | RoughJS seed for deterministic rendering. |
+| `className` | string | - | Additional classes applied to the wrapper. |
+| `sliderClassName` | string | - | Additional classes applied to the slider. |
+
+## Shapes
+
+- round
+- rounded
+
+## Sizes
+
+- sm
+- md
+- lg
+- `number`

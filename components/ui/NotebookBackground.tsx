@@ -18,7 +18,6 @@ export function NotebookBackground({
                 className
             )}
         >
-            {/* ruled notebook lines */}
             <div
                 className="pointer-events-none fixed inset-0 z-0 opacity-70"
                 style={{
@@ -27,12 +26,10 @@ export function NotebookBackground({
                 }}
             />
 
-            {/* red margin line */}
             {showMarginLine && (
                 <div className="pointer-events-none absolute left-[72px] top-0 z-0 h-full w-[2px] bg-red-300/50" />
             )}
 
-            {/* tiny paper texture */}
             <div
                 className="pointer-events-none absolute inset-0 z-0 opacity-[0.18]"
                 style={{

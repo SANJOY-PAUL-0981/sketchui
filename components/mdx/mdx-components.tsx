@@ -5,6 +5,14 @@ import { DemoTape } from "../examples/Tape-demo"
 import { DemoPaper } from "../examples/Paper-demo"
 import { DemoSketchBorder } from "../examples/SketchBorder-demo"
 import { DemoToast } from "../examples/Toast-demo"
+import { DemoAvatar } from "../examples/Avatar-demo"
+import { DemoCalender } from "../examples/Calender-demo"
+import { DemoHoverCard } from "../examples/HoverCard-demo"
+import { DemoLoader } from "../examples/Loader-demo"
+import { DemoSectionTitle } from "../examples/SectionTitle-demo"
+import { DemoSeparator } from "../examples/Separator-demo"
+import { DemoToggle } from "../examples/Toggle-demo"
+import { DemoTooltip } from "../examples/Tooltip-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -20,6 +28,8 @@ import { Tape } from "../ui/Tape"
 import { Toast } from "../ui/Toast"
 import { Toggle } from "../ui/Toggle"
 import { Tooltip } from "../ui/Tooltip"
+import { DemoDoodleGridBackground } from "../examples/DoodleGridBackground-demo"
+import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
 import Link from "next/link"
 import { Pre } from "../site/Pre"
@@ -32,7 +42,15 @@ const demos = {
     "tape-demo": DemoTape,
     "paper-demo": DemoPaper,
     "sketch-border-demo": DemoSketchBorder,
-    "toast-demo": DemoToast
+    "toast-demo": DemoToast,
+    "avatar-demo": DemoAvatar,
+    "calender-demo": DemoCalender,
+    "hover-card-demo": DemoHoverCard,
+    "loader-demo": DemoLoader,
+    "section-title-demo": DemoSectionTitle,
+    "separator-demo": DemoSeparator,
+    "toggle-demo": DemoToggle,
+    "tooltip-demo": DemoTooltip
 }
 
 type DemoName = keyof typeof demos
@@ -73,6 +91,8 @@ export const mdxComponents = {
     Toast,
     Toggle,
     Tooltip,
+    DemoDoodleGridBackground,
+    DemoNotebookBackground,
     Link,
     pre: async ({ children }: any) => {
         const code = children.props.children

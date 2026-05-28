@@ -19,7 +19,6 @@ export function DoodleGridBackground({
 }: DoodleGridBackgroundProps) {
     return (
         <div className={cn("relative min-h-screen bg-[#fffbf2]", className)}>
-            {/* graph paper grid */}
             <div
                 className="pointer-events-none fixed inset-0 z-0 opacity-45"
                 style={{
@@ -31,7 +30,6 @@ export function DoodleGridBackground({
                 }}
             />
 
-            {/* bigger grid lines */}
             <div
                 className="pointer-events-none fixed inset-0 z-0 opacity-20"
                 style={{
@@ -43,7 +41,6 @@ export function DoodleGridBackground({
                 }}
             />
 
-            {/* doodle marks */}
             <div
                 className={cn(
                     "pointer-events-none fixed inset-0 z-0",
@@ -60,7 +57,6 @@ export function DoodleGridBackground({
                 }}
             />
 
-            {/* subtle paper grain */}
             <div
                 className="pointer-events-none fixed inset-0 z-0 opacity-[0.12]"
                 style={{

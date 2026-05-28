@@ -93,7 +93,7 @@ export const componentRegistry: ComponentRegistryItem[] = [
     {
         name: "Loader",
         slug: "loader",
-        description: "A fun loader component",
+        description: "A fun loader component.",
         href: "/docs/components/loader",
         status: "ready",
         order: 11
@@ -118,7 +118,7 @@ export const componentRegistry: ComponentRegistryItem[] = [
         name: "Toggle",
         slug: "toogle",
         description: "A fun sketch theme based toggle switch component.",
-        href: "/docs/components/toogle",
+        href: "/docs/components/toggle",
         status: "ready",
         order: 14
     },
