@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/Button"
 export function DemoButton() {
     return (
         <div className="flex flex-wrap items-end gap-6">
-            <Button variant="green">Default (green)</Button>
-            <Button enable3D variant="purple" depth={16}
+            <Button className="cursor-pointer">Default (yellow)</Button>
+            <Button className="cursor-pointer" enable3D variant="green" depth={16}
             roughOptions={{
                 roughness: 1.5,
                 hoverRoughness: 0.5,
@@ -12,7 +12,7 @@ export function DemoButton() {
             >
                 Purple 3D
             </Button>
-            <Button
+            <Button className="cursor-pointer"
                 variant="purple"
                 roughOptions={{
                     fillStyle: "cross-hatch",

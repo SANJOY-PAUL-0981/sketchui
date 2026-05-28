@@ -8,3 +8,27 @@
     --font-family-lacquer: "Lacquer", cursive;
     --font-family-indie: "Indie Flower", cursive;
 }
+
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.shiki {
+  background: transparent !important;
+  font-weight: 600;
+}
+
+.shiki span {
+  font-weight: 600;
+}
+
+.shiki code {
+  font-size: 14px;
+  line-height: 1.8;
+}

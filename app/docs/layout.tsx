@@ -1,17 +1,17 @@
 import { DocsSidebar } from "@/components/site/DocsSidebar"
+import { MobileDocsNav } from "@/components/site/MobileDocsNav"
+import { DoodleGridBackground } from "@/components/ui/DoodleGridBackground"
 
-export default function DocsLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export default function DocsLayout({ children }: { children: React.ReactNode }) {
     return (
-        <main className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-10 md:grid-cols-[260px_1fr]">
-            <aside className="hidden md:block">
-                <DocsSidebar />
-            </aside>
-
-            <section className="min-w-0">{children}</section>
-        </main>
+        <div className="flex min-h-screen bg-[#fffbf2]">
+            <DocsSidebar />
+            <main className="flex-1 min-w-0 px-40 py-10 max-w-7xl">
+                <MobileDocsNav />
+                <DoodleGridBackground>
+                    {children}
+                </DoodleGridBackground>
+            </main>
+        </div>
     )
 }

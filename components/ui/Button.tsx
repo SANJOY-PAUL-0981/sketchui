@@ -18,14 +18,14 @@ type RoughButtonOptions = {
     bowing?: number
 }
 
-type ButtonVariant = "yellow" | "purple" | "green"
+type ButtonVariant = "yellow" | "purple" | "green" | (string & {})
 
 type ButtonProps = {
     children: React.ReactNode
     href?: string
     external?: boolean
     onClick?: () => void
-    variant?: ButtonVariant
+    variant?: ButtonVariant 
     className?: string
     textClassName?: string
     roughOptions?: RoughButtonOptions
@@ -40,10 +40,6 @@ type ButtonProps = {
 
     hoverSketch?: boolean
 
-    /*
-     - Controls whole button hover movement.
-     - Example: hoverTranslateY={-4}, hoverTranslateX={0}
-     */
     hoverTranslateX?: number
     hoverTranslateY?: number
     hoverRotate?: number
@@ -63,13 +59,13 @@ type ButtonProps = {
     disabled?: boolean
 }
 
-const colors: Record<ButtonVariant, string> = {
+const presetColors: Record<string, string> = {
     yellow: "#fde047",
     purple: "#c084fc",
     green: "#86efac",
 }
 
-const seedMap: Record<ButtonVariant, number> = {
+const presetSeeds: Record<string, number> = {
     yellow: 50,
     purple: 100,
     green: 150,
@@ -88,6 +84,14 @@ function polygonPath(points: [number, number][]) {
             .map(([px, py], index) => `${index === 0 ? "M" : "L"} ${px} ${py}`)
             .join(" ") + " Z"
     )
+}
+
+function getSeedFromString(str: string): number {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return Math.abs(hash) % 1000
 }
 
 export function Button({
@@ -124,6 +128,9 @@ export function Button({
 }: ButtonProps) {
     const svgRef = useRef<SVGSVGElement | null>(null)
     const [isHovered, setIsHovered] = useState(false)
+
+    const buttonColor = presetColors[variant] || variant
+    const resolvedSeed = roughOptions?.seed ?? (presetSeeds[variant] || getSeedFromString(variant))
 
     useEffect(() => {
         const svg = svgRef.current
@@ -176,10 +183,8 @@ export function Button({
                 [frontX + dx, frontBottom + dy],
             ])
 
-            const depthBaseSeed = roughOptions?.seed ?? seedMap[variant]
-
             const sideOptions = {
-                seed: depthBaseSeed + 10,
+                seed: resolvedSeed + 10,
                 stroke,
                 strokeWidth: depthStrokeWidth ?? strokeWidth,
                 fill: depthFill,
@@ -191,7 +196,7 @@ export function Button({
             }
 
             const bottomOptions = {
-                seed: depthBaseSeed + 20,
+                seed: resolvedSeed + 20,
                 stroke,
                 strokeWidth: depthStrokeWidth ?? strokeWidth,
                 fill: depthFill,
@@ -210,10 +215,10 @@ export function Button({
         }
 
         const frontShape = rc.rectangle(frontX, frontY, width, height, {
-            seed: roughOptions?.seed ?? seedMap[variant],
+            seed: resolvedSeed,
             stroke,
             strokeWidth,
-            fill: colors[variant],
+            fill: buttonColor,
             fillStyle: roughOptions?.fillStyle ?? "hachure",
             hachureGap,
             hachureAngle: roughOptions?.hachureAngle ?? -10,
@@ -224,6 +229,8 @@ export function Button({
         svg.appendChild(frontShape)
     }, [
         variant,
+        buttonColor,
+        resolvedSeed,
         width,
         height,
         x,
