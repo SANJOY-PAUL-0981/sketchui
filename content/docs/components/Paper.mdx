@@ -1,0 +1,440 @@
+---
+title: Paper
+description: A paper-like wrapper for notes and content blocks.
+category: Components
+status: ready
+order: 8
+---
+
+<ComponentPreview name="paper-demo" />
+
+## Code 
+```tsx
+"use client"
+
+import { useEffect, useRef } from "react"
+import rough from "roughjs"
+import { cn } from "@/lib/utils"
+
+type PaperVariant = "cream" | "white" | "yellow" | "pink" | "blue" | "green" | "gray"
+
+type PaperEdgeStyle = "normal" | "folded-corner" | "curled-bottom" | "torn" | "messy"
+
+type FoldSide = "top-right" | "top-left" | "bottom-right" | "bottom-left"
+
+type RoughPaperOptions = {
+    seed?: number
+    stroke?: string
+    strokeWidth?: number
+    fill?: string
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
+    hachureGap?: number
+    hachureAngle?: number
+    roughness?: number
+    bowing?: number
+}
+
+type PaperProps = {
+    children: React.ReactNode
+
+    width?: number | string
+    height?: number | string
+
+    x?: number
+    y?: number
+
+    variant?: PaperVariant
+    edgeStyle?: PaperEdgeStyle
+
+    borderColor?: string
+    transparent?: boolean
+    roughOptions?: RoughPaperOptions
+
+    rotate?: number
+    padding?: number
+
+    foldSize?: number
+
+    /**
+     * Only works when edgeStyle="folded-corner"
+     */
+    foldSide?: FoldSide
+
+    curlSize?: number
+    tornAmount?: number
+
+    className?: string
+    contentClassName?: string
+}
+
+const colors: Record<PaperVariant, string> = {
+    cream: "#fffbf2",
+    white: "#ffffff",
+    yellow: "#fef3c7",
+    pink: "#fce7f3",
+    blue: "#dbeafe",
+    green: "#dcfce7",
+    gray: "#f3f4f6",
+}
+
+const seedMap: Record<PaperVariant, number> = {
+    cream: 10,
+    white: 20,
+    yellow: 30,
+    pink: 40,
+    blue: 50,
+    green: 60,
+    gray: 70,
+}
+
+function foldedCornerPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    fold: number,
+    foldSide: FoldSide
+) {
+    const right = x + width
+    const bottom = y + height
+
+    switch (foldSide) {
+        case "top-left":
+            return `
+                M ${x + fold} ${y}
+                L ${right} ${y}
+                L ${right} ${bottom}
+                L ${x} ${bottom}
+                L ${x} ${y + fold}
+                Z
+
+                M ${x + fold} ${y}
+                L ${x + fold} ${y + fold}
+                L ${x} ${y + fold}
+            `
+
+        case "bottom-right":
+            return `
+                M ${x} ${y}
+                L ${right} ${y}
+                L ${right} ${bottom - fold}
+                L ${right - fold} ${bottom}
+                L ${x} ${bottom}
+                Z
+
+                M ${right} ${bottom - fold}
+                L ${right - fold} ${bottom - fold}
+                L ${right - fold} ${bottom}
+            `
+
+        case "bottom-left":
+            return `
+                M ${x} ${y}
+                L ${right} ${y}
+                L ${right} ${bottom}
+                L ${x + fold} ${bottom}
+                L ${x} ${bottom - fold}
+                Z
+
+                M ${x} ${bottom - fold}
+                L ${x + fold} ${bottom - fold}
+                L ${x + fold} ${bottom}
+            `
+
+        case "top-right":
+        default:
+            return `
+                M ${x} ${y}
+                L ${right - fold} ${y}
+                L ${right} ${y + fold}
+                L ${right} ${bottom}
+                L ${x} ${bottom}
+                Z
+
+                M ${right - fold} ${y}
+                L ${right - fold} ${y + fold}
+                L ${right} ${y + fold}
+            `
+    }
+}
+
+function curledBottomPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    curl: number
+) {
+    return `
+    M ${x} ${y}
+    L ${x + width} ${y}
+    L ${x + width} ${y + height - curl}
+    Q ${x + width * 0.75} ${y + height + curl} ${x + width * 0.5} ${y + height - curl / 2}
+    Q ${x + width * 0.25} ${y + height - curl * 1.5} ${x} ${y + height}
+    L ${x} ${y}
+    Z
+  `
+}
+
+function tornPaperPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    amount: number
+) {
+    const top = `
+    M ${x} ${y}
+    L ${x + width * 0.12} ${y + amount}
+    L ${x + width * 0.24} ${y - amount * 0.4}
+    L ${x + width * 0.36} ${y + amount * 0.8}
+    L ${x + width * 0.48} ${y}
+    L ${x + width * 0.6} ${y + amount * 1.1}
+    L ${x + width * 0.72} ${y - amount * 0.2}
+    L ${x + width * 0.84} ${y + amount * 0.7}
+    L ${x + width} ${y}
+  `
+
+    return `
+    ${top}
+    L ${x + width} ${y + height}
+    L ${x + width * 0.84} ${y + height - amount}
+    L ${x + width * 0.72} ${y + height + amount * 0.3}
+    L ${x + width * 0.6} ${y + height - amount * 0.8}
+    L ${x + width * 0.48} ${y + height}
+    L ${x + width * 0.36} ${y + height - amount * 1.1}
+    L ${x + width * 0.24} ${y + height + amount * 0.2}
+    L ${x + width * 0.12} ${y + height - amount * 0.7}
+    L ${x} ${y + height}
+    Z
+  `
+}
+
+function messyPaperPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+) {
+    return `
+    M ${x + 4} ${y}
+    L ${x + width - 8} ${y + 3}
+    L ${x + width} ${y + height * 0.35}
+    L ${x + width - 4} ${y + height - 6}
+    L ${x + width * 0.62} ${y + height}
+    L ${x + 8} ${y + height - 3}
+    L ${x} ${y + height * 0.65}
+    L ${x + 3} ${y + 6}
+    Z
+  `
+}
+
+export function Paper({
+    children,
+    width = "100%",
+    height = 160,
+    x = 8,
+    y = 8,
+    variant = "cream",
+    edgeStyle = "normal",
+    borderColor = "#111",
+    transparent = false,
+    roughOptions,
+    rotate = 0,
+    padding = 24,
+    foldSize = 28,
+    foldSide = "top-right",
+    curlSize = 18,
+    tornAmount = 8,
+    className,
+    contentClassName,
+}: PaperProps) {
+    const svgRef = useRef<SVGSVGElement | null>(null)
+    const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        const svg = svgRef.current
+        const wrapper = wrapperRef.current
+        if (!svg || !wrapper) return
+
+        const rect = wrapper.getBoundingClientRect()
+        const drawWidth = rect.width - x * 2
+        const drawHeight = rect.height - y * 2
+
+        if (drawWidth <= 0 || drawHeight <= 0) return
+
+        svg.replaceChildren()
+
+        const rc = rough.svg(svg)
+
+        const options = {
+            seed: roughOptions?.seed ?? seedMap[variant],
+            stroke: roughOptions?.stroke ?? borderColor,
+            strokeWidth: roughOptions?.strokeWidth ?? 1.6,
+            fill: transparent ? undefined : roughOptions?.fill ?? colors[variant],
+            fillStyle: transparent ? undefined : roughOptions?.fillStyle ?? "solid",
+            hachureGap: roughOptions?.hachureGap ?? 7,
+            hachureAngle: roughOptions?.hachureAngle ?? -10,
+            roughness: roughOptions?.roughness ?? 1.8,
+            bowing: roughOptions?.bowing ?? 1,
+        }
+
+        let path = ""
+
+        if (edgeStyle === "folded-corner") {
+            path = foldedCornerPath(
+                x,
+                y,
+                drawWidth,
+                drawHeight,
+                foldSize,
+                foldSide
+            )
+        } else if (edgeStyle === "curled-bottom") {
+            path = curledBottomPath(x, y, drawWidth, drawHeight, curlSize)
+        } else if (edgeStyle === "torn") {
+            path = tornPaperPath(x, y, drawWidth, drawHeight, tornAmount)
+        } else if (edgeStyle === "messy") {
+            path = messyPaperPath(x, y, drawWidth, drawHeight)
+        }
+
+        const shape =
+            edgeStyle === "normal"
+                ? rc.rectangle(x, y, drawWidth, drawHeight, options)
+                : rc.path(path, options)
+
+        svg.appendChild(shape)
+    }, [
+        x,
+        y,
+        variant,
+        edgeStyle,
+        borderColor,
+        transparent,
+        roughOptions,
+        foldSize,
+        foldSide,
+        curlSize,
+        tornAmount,
+        children,
+    ])
+
+    return (
+        <div
+            ref={wrapperRef}
+            className={cn("relative", className)}
+            style={{
+                width,
+                height,
+                rotate: `${rotate}deg`,
+            }}
+        >
+            <svg
+                ref={svgRef}
+                style={{ overflow: "visible" }}
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                aria-hidden="true"
+            />
+
+            <div
+                className={cn("relative z-10", contentClassName)}
+                style={{ padding }}
+            >
+                {children}
+            </div>
+        </div>
+    )
+}
+```
+
+## Usage
+```tsx
+<Paper
+    edgeStyle="folded-corner"
+    foldSide="bottom-right"
+    variant="pink"
+    height={170}
+    roughOptions={{
+        fillStyle: "hachure"
+    }}
+>
+    <h3 className="text-lg font-semibold">Bottom Fold</h3>
+    <p className="mt-2 text-sm text-muted-foreground">
+        Move the folded corner to another side.
+    </p>
+</Paper>
+``` 
+
+## Props 
+| Prop | Type | Default | Description |
+|--------|--------|--------|--------|
+| `children` | ReactNode | - | Content rendered inside the paper. |
+| `width` | number \| string | `"100%"` | Sets the width of the paper. |
+| `height` | number \| string | `160` | Sets the height of the paper. |
+| `x` | number | `8` | X offset used for RoughJS rendering. |
+| `y` | number | `8` | Y offset used for RoughJS rendering. |
+| `variant` | PaperVariant | `"cream"` | Controls the paper color theme. |
+| `edgeStyle` | PaperEdgeStyle | `"normal"` | Defines the paper edge appearance. |
+| `borderColor` | string | `"#111"` | Border color of the paper. |
+| `transparent` | boolean | `false` | Removes the fill color and renders only the border. |
+| `rotate` | number | `0` | Rotates the paper in degrees. |
+| `padding` | number | `24` | Inner spacing of the paper content. |
+| `foldSize` | number | `28` | Size of the folded corner effect. |
+| `foldSide` | FoldSide | `"top-right"` | Position of the folded corner. |
+| `curlSize` | number | `18` | Size of the paper curl effect. |
+| `tornAmount` | number | `8` | Controls the intensity of torn paper edges. |
+| `className` | string | - | Additional classes applied to the paper wrapper. |
+| `contentClassName` | string | - | Additional classes applied to the content container. |
+| `roughOptions` | RoughPaperOptions | - | Custom RoughJS rendering configuration. |
+
+## Rough Options
+The `roughOptions` prop allows you to customize the hand-drawn appearance.
+- `seed` (number): Used to control the randomness of stroke.
+- `stroke` (string): It gives the color to the stroke.
+- `strokeWidth` (number): Sets width of stroke.
+- `fill` (string): Stes the fill color.
+- `fillStyle`: Gives the filling style in the component. [`"solid"`, `"hachure"`, `"zigzag"`, `"cross-hatch"`, `"dots"`, `"dashed"`, `"zigzag-line"`]
+- `hachureGap` (number): The gap between every hachure stroke.
+- `hachureAngle` (number): Sets the hachure angle.
+- `roughness` (number): The amount of roughness, higher value means higher roughness.
+- `bowing` (number): The bending effect of the stroke.
+
+```tsx
+<Paper 
+edgeStyle="curled-bottom" 
+variant="blue" height={170}
+roughOptions={{
+    fillStyle: "dots",
+    hachureGap: 6,
+    roughness: 0.5
+}}>
+    <h3 className="text-lg font-semibold">Curled Bottom</h3>
+    <p className="mt-2 text-sm text-muted-foreground">
+        A curved bottom edge for a loose paper effect.
+    </p>
+</Paper>
+```
+## Variants
+
+- cream
+- white
+- yellow
+- blue
+- green
+- pink
+- gray
+
+## Edge Styles
+
+- normal
+- folded-corner
+- curled-corner
+- torn
+- messy
+
+## Fold Sides
+
+- top-right
+- top-left
+- bottom-right
+- bottom-left

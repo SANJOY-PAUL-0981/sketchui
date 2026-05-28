@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/Card"
 
 export function DemoCard() {
     return (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-14">
             <Card
                 variant="blue"
                 height={250}

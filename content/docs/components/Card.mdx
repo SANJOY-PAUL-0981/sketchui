@@ -1,0 +1,407 @@
+---
+title: Card
+description: A sketchy paper card for playful interfaces.
+category: Components
+status: ready
+order: 5
+---
+
+<ComponentPreview name="card-demo" />
+
+## Code 
+```tsx
+"use client"
+
+import { useEffect, useRef } from "react"
+import rough from "roughjs"
+import { cn } from "@/lib/utils"
+
+type CardShape = "rectangle" | "rounded-rectangle"
+
+type CardVariant = "yellow" | "purple" | "green" | "pink" | "blue" | "gray" | "silver" | "red" | "orange" | "sky" | "paper"
+
+type CardBorderStyle = "rough" | "dashed" | "project-corner"
+
+type FoldSide = "top-right" | "top-left" | "bottom-right" | "bottom-left"
+
+type RoughCardOptions = {
+    seed?: number
+    stroke?: string
+    strokeWidth?: number
+    fill?: string
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
+    hachureGap?: number
+    hachureAngle?: number
+    roughness?: number
+    bowing?: number
+}
+
+type CardProps = {
+    children: React.ReactNode
+    width?: number | string
+    height?: number | string
+    x?: number
+    y?: number
+    shape?: CardShape
+    radius?: number
+    variant?: CardVariant
+    borderColor?: string
+    transparent?: boolean
+    roughOptions?: RoughCardOptions
+    padding?: number
+    className?: string
+    contentClassName?: string
+    borderStyle?: CardBorderStyle
+
+    foldSide?: FoldSide
+    foldSize?: number
+
+    depth?: boolean
+    depthStyle?: "solid" | "extrude"
+    depthColor?: string
+    depthStrokeColor?: string
+    depthOffsetX?: number
+    depthOffsetY?: number
+}
+
+const colors: Record<CardVariant, string> = {
+    yellow: "#fde047",
+    purple: "#d8c7ff",
+    green: "#bbf7d0",
+    pink: "#fbcfe8",
+    blue: "#bfdbfe",
+    gray: "#e5e7eb",
+    silver: "#d1d5db",
+    red: "#fecaca",
+    orange: "#fed7aa",
+    sky: "#bae6fd",
+    paper: "#fff7df",
+}
+
+const seedMap: Record<CardVariant, number> = {
+    yellow: 20,
+    purple: 40,
+    green: 60,
+    pink: 80,
+    blue: 100,
+    gray: 120,
+    silver: 140,
+    red: 160,
+    orange: 180,
+    sky: 200,
+    paper: 220,
+}
+
+function roundedRectPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+) {
+    const r = Math.min(radius, width / 2, height / 2)
+
+    return `
+        M ${x + r} ${y}
+        L ${x + width - r} ${y}
+        Q ${x + width} ${y} ${x + width} ${y + r}
+        L ${x + width} ${y + height - r}
+        Q ${x + width} ${y + height} ${x + width - r} ${y + height}
+        L ${x + r} ${y + height}
+        Q ${x} ${y + height} ${x} ${y + height - r}
+        L ${x} ${y + r}
+        Q ${x} ${y} ${x + r} ${y}
+        Z
+    `
+}
+
+function projectCornerPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    corner: number,
+    foldSide: FoldSide
+) {
+    const right = x + width
+    const bottom = y + height
+
+    switch (foldSide) {
+        case "top-left":
+            return `
+                M ${x + corner} ${y}
+                L ${right} ${y}
+                L ${right} ${bottom}
+                L ${x} ${bottom}
+                L ${x} ${y + corner}
+                Z
+
+                M ${x + corner} ${y}
+                L ${x + corner} ${y + corner}
+                L ${x} ${y + corner}
+            `
+
+        case "bottom-right":
+            return `
+                M ${x} ${y}
+                L ${right} ${y}
+                L ${right} ${bottom - corner}
+                L ${right - corner} ${bottom}
+                L ${x} ${bottom}
+                Z
+
+                M ${right} ${bottom - corner}
+                L ${right - corner} ${bottom - corner}
+                L ${right - corner} ${bottom}
+            `
+
+        case "bottom-left":
+            return `
+                M ${x} ${y}
+                L ${right} ${y}
+                L ${right} ${bottom}
+                L ${x + corner} ${bottom}
+                L ${x} ${bottom - corner}
+                Z
+
+                M ${x} ${bottom - corner}
+                L ${x + corner} ${bottom - corner}
+                L ${x + corner} ${bottom}
+            `
+
+        case "top-right":
+        default:
+            return `
+                M ${x} ${y}
+                L ${right - corner} ${y}
+                L ${right} ${y + corner}
+                L ${right} ${bottom}
+                L ${x} ${bottom}
+                Z
+
+                M ${right - corner} ${y}
+                L ${right - corner} ${y + corner}
+                L ${right} ${y + corner}
+            `
+    }
+}
+
+export function Card({
+    children,
+    width = "100%",
+    height = 220,
+    x = 6,
+    y = 6,
+    shape = "rounded-rectangle",
+    radius = 18,
+    variant = "paper",
+    borderColor = "#111",
+    transparent = false,
+    roughOptions,
+    padding = 24,
+    className,
+    contentClassName,
+    borderStyle = "rough",
+    foldSide = "top-right",
+    foldSize = 22,
+}: CardProps) {
+    const svgRef = useRef<SVGSVGElement | null>(null)
+    const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        const svg = svgRef.current
+        const wrapper = wrapperRef.current
+        if (!svg || !wrapper) return
+
+        const rect = wrapper.getBoundingClientRect()
+        const drawWidth = rect.width - x * 2
+        const drawHeight = rect.height - y * 2
+
+        if (drawWidth <= 0 || drawHeight <= 0) return
+
+        svg.replaceChildren()
+
+        const rc = rough.svg(svg)
+
+        const commonOptions = {
+            seed: roughOptions?.seed ?? seedMap[variant],
+            stroke: roughOptions?.stroke ?? borderColor,
+            strokeWidth: roughOptions?.strokeWidth ?? 1.8,
+            fill: transparent ? undefined : roughOptions?.fill ?? colors[variant],
+            fillStyle: transparent ? undefined : roughOptions?.fillStyle ?? "hachure",
+            hachureGap: roughOptions?.hachureGap ?? 7,
+            hachureAngle: roughOptions?.hachureAngle ?? -10,
+            roughness: roughOptions?.roughness ?? 1.5,
+            bowing: roughOptions?.bowing ?? 0.9,
+        }
+
+        let shapeNode: SVGGElement
+
+        if (borderStyle === "dashed") {
+            shapeNode = rc.rectangle(x, y, drawWidth, drawHeight, {
+                ...commonOptions,
+                strokeLineDash: [8, 6],
+            })
+        } else if (borderStyle === "project-corner") {
+            const path = projectCornerPath(
+                x,
+                y,
+                drawWidth,
+                drawHeight,
+                foldSize,
+                foldSide
+            )
+
+            shapeNode = rc.path(path, {
+                ...commonOptions,
+                fill: transparent ? undefined : roughOptions?.fill ?? colors[variant],
+                fillStyle: transparent
+                    ? undefined
+                    : roughOptions?.fillStyle ?? "hachure",
+            })
+        } else {
+            shapeNode =
+                shape === "rounded-rectangle"
+                    ? rc.path(
+                        roundedRectPath(x, y, drawWidth, drawHeight, radius),
+                        commonOptions
+                    )
+                    : rc.rectangle(x, y, drawWidth, drawHeight, commonOptions)
+        }
+
+        svg.appendChild(shapeNode)
+    }, [
+        x,
+        y,
+        shape,
+        radius,
+        variant,
+        borderColor,
+        transparent,
+        roughOptions,
+        children,
+        borderStyle,
+        foldSide,
+        foldSize,
+    ])
+
+    return (
+        <div
+            ref={wrapperRef}
+            className={cn("relative", className)}
+            style={{
+                width,
+                height,
+            }}
+        >
+            <svg
+                ref={svgRef}
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                aria-hidden="true"
+            />
+
+            <div
+                className={cn("relative z-10", contentClassName)}
+                style={{ padding }}
+            >
+                {children}
+            </div>
+        </div>
+    )
+}
+```
+
+## Usage
+```tsx
+<Card borderStyle="project-corner" variant="paper" height={250} width={250}>
+    <h3 className="text-lg font-semibold">Project Corner</h3>
+    <p className="mt-2 text-sm text-muted-foreground">
+        A folded-corner style card for projects or highlights.
+    </p>
+</Card>
+
+```
+
+## Props
+| Prop | Type | Default | Description |
+|--------|--------|--------|--------|
+| `children` | ReactNode | - | Content rendered inside the card. |
+| `width` | number \| string | `"100%"` | Sets the width of the card. |
+| `height` | number | `220` | Sets the height of the card. |
+| `x` | number | `6` | X offset used for RoughJS rendering. |
+| `y` | number | `6` | Y offset used for RoughJS rendering. |
+| `shape` | CardShape | `"rounded-rectangle"` | Defines the card shape. |
+| `radius` | number | `18` | Corner radius for rounded shapes. |
+| `variant` | CardVariant | `"paper"` | Controls the card color theme. |
+| `borderColor` | string | `"#111"` | Border color of the card. |
+| `transparent` | boolean | `false` | Removes the fill color and renders only the border. |
+| `padding` | number | `24` | Inner spacing of the card content. |
+| `className` | string | - | Additional classes applied to the card wrapper. |
+| `contentClassName` | string | - | Additional classes applied to the content container. |
+| `borderStyle` | BorderStyle | `"rough"` | Controls the visual border style. |
+| `foldSide` | FoldSide | `"top-right"` | Position of the folded corner for project-corner style cards. |
+| `foldSize` | number | `22` | Size of the folded corner effect. |
+| `roughOptions` | RoughCardOptions | - | Custom RoughJS rendering configuration. |
+
+## Rough Options
+The `roughOptions` prop allows you to customize the hand-drawn appearance.
+- `seed` (number): Used to control the randomness of stroke.
+- `stroke` (string): It gives the color to the stroke.
+- `strokeWidth` (number): Sets width of stroke.
+- `fill` (string): Stes the fill color.
+- `fillStyle`: Gives the filling style in the component. [`"solid"`, `"hachure"`, `"zigzag"`, `"cross-hatch"`, `"dots"`, `"dashed"`, `"zigzag-line"`]
+- `hachureGap` (number): The gap between every hachure stroke.
+- `hachureAngle` (number): Sets the hachure angle.
+- `roughness` (number): The amount of roughness, higher value means higher roughness.
+- `bowing` (number): The bending effect of the stroke.
+
+```tsx
+<Card
+    variant="blue"
+    shape="rectangle"
+    borderStyle="project-corner"
+    height={250}
+    width={250}
+    roughOptions={{
+        fillStyle: "dots",
+        hachureGap: 6,
+        roughness: 1.6,
+    }}
+>
+    <h3 className="text-lg font-semibold">Dots Filled style & Basic</h3>
+    <p className="mt-2 text-sm text-muted-foreground">
+        Use dotted Rough.js fill for a playful look.
+    </p>
+</Card>
+```
+
+## Variants
+- yellow
+- purple
+- green 
+- pink
+- blue
+- gray
+- silver
+- red
+- orange
+- sky
+- paper
+
+## Shapes
+
+- rectangle
+- rounded-rectangle
+
+## Border Styles
+
+- rough
+- dashed
+- project-corner
+
+## Fold Sides
+
+- top-right
+- top-left
+- bottom-right
+- bottom-left

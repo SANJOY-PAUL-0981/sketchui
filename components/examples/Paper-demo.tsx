@@ -25,7 +25,9 @@ export function DemoPaper() {
                 </p>
             </Paper>
 
-            <Paper edgeStyle="curled-bottom" variant="blue" height={170}
+            <Paper 
+            edgeStyle="curled-bottom" 
+            variant="blue" height={170}
             roughOptions={{
                 fillStyle: "dots",
                 hachureGap: 6,

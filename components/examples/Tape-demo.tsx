@@ -4,16 +4,13 @@ export function DemoTape() {
     return (
         <div className="flex flex-wrap items-center gap-8">
             <Tape
-                variant="orange"
-                height={35}
-                roughOptions={{
-                    roughness: 1
-                }}
+                variant="pink"
+                height={45}
             />
 
             <Tape
-                height={35}
-                variant="gray"
+                height={45}
+                variant="yellow"
                 tapeStyle="side-torn"
                 roughOptions={{
                     fillStyle: "cross-hatch",

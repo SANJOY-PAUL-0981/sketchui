@@ -8,11 +8,12 @@ export function DemoToast() {
                 pointer="bottom-left"
                 dottedShadow={false}
                 height={200}
+                width={300}
                 contentClassName="text-center mt-5"
             >
                 <h3 className="text-lg font-semibold">Cloud Toast</h3>
                 <p className="text-sm">
-                    A soft cloud shape for friendly messages.
+                    A cloud shape for messages.
                 </p>
             </Toast>
 
@@ -21,6 +22,7 @@ export function DemoToast() {
                 pointer="bottom-right"
                 dottedShadow={false}
                 height={150}
+                width={300}
                 contentClassName="text-center mt-2"
 
             >
@@ -34,7 +36,7 @@ export function DemoToast() {
                 variant="rounded"
                 color="paper"
                 pointer="left"
-                width={380}
+                width={300}
                 dottedShadow={false}
             >
                 <h3 className="text-lg font-semibold">Side Pointer</h3>

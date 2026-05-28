@@ -1,6 +1,10 @@
 import { DemoBadge } from "@/components/examples/Badge-demo"
 import { DemoButton } from "@/components/examples/Button-demo"
 import { DemoCard } from "@/components/examples/Card-demo"
+import { DemoTape } from "../examples/Tape-demo"
+import { DemoPaper } from "../examples/Paper-demo"
+import { DemoSketchBorder } from "../examples/SketchBorder-demo"
+import { DemoToast } from "../examples/Toast-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -25,6 +29,10 @@ const demos = {
     "button-demo": DemoButton,
     "card-demo": DemoCard,
     "badge-demo": DemoBadge,
+    "tape-demo": DemoTape,
+    "paper-demo": DemoPaper,
+    "sketch-border-demo": DemoSketchBorder,
+    "toast-demo": DemoToast
 }
 
 type DemoName = keyof typeof demos
@@ -36,6 +44,7 @@ export function ComponentPreview({ name }: { name: DemoName }) {
         <Paper
             variant="cream"
             edgeStyle="folded-corner"
+            foldSide="top-left"
             height="auto"
             className="my-6"
             contentClassName="min-h-[260px] flex items-center justify-center"

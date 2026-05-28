@@ -1,0 +1,510 @@
+---
+title: Toast
+description: A comic themed sketchy toast component with playful variants.
+category: Components
+status: ready
+order: 10
+---
+
+<ComponentPreview name="toast-demo" />
+
+## Code
+```tsx
+"use client"
+
+import { useEffect, useRef } from "react"
+import rough from "roughjs"
+import { cn } from "@/lib/utils"
+
+type ComicToastVariant = "bubble" | "rounded" | "cloud" | "burst" | "thought"
+
+type PointerPosition = "bottom-left" | "bottom-right" | "top-left" | "top-right" | "left" | "right"
+
+type ComicToastColor = "paper" | "yellow" | "purple" | "green" | "pink" | "blue"
+
+type RoughToastOptions = {
+    seed?: number
+    stroke?: string
+    strokeWidth?: number
+    roughness?: number
+    bowing?: number
+}
+
+type ComicToastProps = {
+    children: React.ReactNode
+
+    variant?: ComicToastVariant
+    pointer?: PointerPosition
+    color?: ComicToastColor
+
+    width?: number | string
+    height?: number | string
+    padding?: number
+
+    rotate?: number
+    dottedShadow?: boolean
+    shadowOffset?: number
+
+    borderColor?: string
+    fillColor?: string
+
+    roughOptions?: RoughToastOptions
+
+    className?: string
+    contentClassName?: string
+}
+
+const colors: Record<ComicToastColor, string> = {
+    paper: "#fffbf2",
+    yellow: "#fef3c7",
+    purple: "#e9d5ff",
+    green: "#bbf7d0",
+    pink: "#fbcfe8",
+    blue: "#bfdbfe",
+}
+
+const seedMap: Record<ComicToastVariant, number> = {
+    bubble: 101,
+    rounded: 202,
+    cloud: 303,
+    burst: 404,
+    thought: 505,
+}
+
+function roundedBubblePath(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    pointer: PointerPosition
+) {
+    const r = 22
+
+    let tail = ""
+
+    if (pointer === "bottom-left") {
+        tail = `
+      L ${x + 72} ${y + h}
+      L ${x + 45} ${y + h + 28}
+      L ${x + 112} ${y + h}
+    `
+    }
+
+    if (pointer === "bottom-right") {
+        tail = `
+      L ${x + w - 112} ${y + h}
+      L ${x + w - 45} ${y + h + 28}
+      L ${x + w - 72} ${y + h}
+    `
+    }
+
+    if (pointer === "top-left") {
+        tail = `
+      L ${x + 112} ${y}
+      L ${x + 45} ${y - 28}
+      L ${x + 72} ${y}
+    `
+    }
+
+    if (pointer === "top-right") {
+        tail = `
+      L ${x + w - 72} ${y}
+      L ${x + w - 45} ${y - 28}
+      L ${x + w - 112} ${y}
+    `
+    }
+
+    if (pointer === "left") {
+        tail = `
+      L ${x} ${y + h * 0.58}
+      L ${x - 30} ${y + h * 0.72}
+      L ${x} ${y + h * 0.42}
+    `
+    }
+
+    if (pointer === "right") {
+        tail = `
+      L ${x + w} ${y + h * 0.42}
+      L ${x + w + 30} ${y + h * 0.72}
+      L ${x + w} ${y + h * 0.58}
+    `
+    }
+
+    return `
+    M ${x + r} ${y}
+    L ${x + w - r} ${y}
+    Q ${x + w} ${y} ${x + w} ${y + r}
+    L ${x + w} ${y + h - r}
+    Q ${x + w} ${y + h} ${x + w - r} ${y + h}
+    ${pointer.startsWith("bottom") ? tail : ""}
+    L ${x + r} ${y + h}
+    Q ${x} ${y + h} ${x} ${y + h - r}
+    ${pointer === "left" ? tail : ""}
+    L ${x} ${y + r}
+    Q ${x} ${y} ${x + r} ${y}
+    ${pointer.startsWith("top") ? tail : ""}
+    ${pointer === "right" ? tail : ""}
+    Z
+  `
+}
+
+function burstPath(x: number, y: number, w: number, h: number) {
+    const cx = x + w / 2
+    const cy = y + h / 2
+    const points = 22
+    const outerX = w / 2
+    const outerY = h / 2
+    const innerX = w / 2 - 18
+    const innerY = h / 2 - 16
+
+    let d = ""
+
+    for (let i = 0; i < points; i++) {
+        const angle = (Math.PI * 2 * i) / points
+        const rx = i % 2 === 0 ? outerX : innerX
+        const ry = i % 2 === 0 ? outerY : innerY
+        const px = cx + Math.cos(angle) * rx
+        const py = cy + Math.sin(angle) * ry
+
+        d += i === 0 ? `M ${px} ${py}` : ` L ${px} ${py}`
+    }
+
+    return `${d} Z`
+}
+
+function cloudPath(x: number, y: number, w: number, h: number) {
+    return `
+    M ${x + w * 0.18} ${y + h * 0.55}
+    C ${x + w * 0.02} ${y + h * 0.48}, ${x + w * 0.05} ${y + h * 0.25}, ${x + w * 0.22} ${y + h * 0.28}
+    C ${x + w * 0.25} ${y + h * 0.08}, ${x + w * 0.48} ${y + h * 0.04}, ${x + w * 0.55} ${y + h * 0.22}
+    C ${x + w * 0.72} ${y + h * 0.06}, ${x + w * 0.95} ${y + h * 0.2}, ${x + w * 0.86} ${y + h * 0.42}
+    C ${x + w * 1.02} ${y + h * 0.58}, ${x + w * 0.82} ${y + h * 0.82}, ${x + w * 0.66} ${y + h * 0.72}
+    C ${x + w * 0.55} ${y + h * 0.92}, ${x + w * 0.28} ${y + h * 0.85}, ${x + w * 0.31} ${y + h * 0.68}
+    C ${x + w * 0.22} ${y + h * 0.75}, ${x + w * 0.1} ${y + h * 0.68}, ${x + w * 0.18} ${y + h * 0.55}
+    Z
+  `
+}
+
+function pointerDots(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    pointer: PointerPosition
+) {
+    if (pointer === "bottom-left") {
+        return [
+            { cx: x + 55, cy: y + h + 20, r: 5 },
+            { cx: x + 35, cy: y + h + 38, r: 3 },
+        ]
+    }
+
+    if (pointer === "bottom-right") {
+        return [
+            { cx: x + w - 55, cy: y + h + 20, r: 5 },
+            { cx: x + w - 35, cy: y + h + 38, r: 3 },
+        ]
+    }
+
+    if (pointer === "top-left") {
+        return [
+            { cx: x + 55, cy: y - 20, r: 5 },
+            { cx: x + 35, cy: y - 38, r: 3 },
+        ]
+    }
+
+    if (pointer === "top-right") {
+        return [
+            { cx: x + w - 55, cy: y - 20, r: 5 },
+            { cx: x + w - 35, cy: y - 38, r: 3 },
+        ]
+    }
+
+    return [
+        { cx: x + w - 15, cy: y + h + 14, r: 5 },
+        { cx: x + w + 5, cy: y + h + 28, r: 3 },
+    ]
+}
+
+function drawDottedShadow(
+    svg: SVGSVGElement,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    offset: number
+) {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g")
+    group.setAttribute("opacity", "0.35")
+
+    const dotSize = 2.2
+    const gap = 6
+
+    for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 24; col++) {
+            const cx = x + w - 110 + col * gap + offset
+            const cy = y + h - 42 + row * gap + offset
+
+            if (cx > x + w + offset || cy > y + h + offset) continue
+
+            const circle = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            )
+
+            circle.setAttribute("cx", String(cx))
+            circle.setAttribute("cy", String(cy))
+            circle.setAttribute("r", String(dotSize))
+            circle.setAttribute("fill", "#111")
+
+            group.appendChild(circle)
+        }
+    }
+
+    svg.appendChild(group)
+}
+
+export function Toast({
+    children,
+    variant = "bubble",
+    pointer = "bottom-left",
+    color = "paper",
+    width = 360,
+    height = 120,
+    padding = 24,
+    rotate = 0,
+    dottedShadow = true,
+    shadowOffset = 10,
+    borderColor = "#111",
+    fillColor,
+    roughOptions,
+    className,
+    contentClassName,
+}: ComicToastProps) {
+    const svgRef = useRef<SVGSVGElement | null>(null)
+    const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        const svg = svgRef.current
+        const wrapper = wrapperRef.current
+
+        if (!svg || !wrapper) return
+
+        const rect = wrapper.getBoundingClientRect()
+
+        const svgWidth = rect.width
+        const svgHeight = rect.height
+
+        const x = 16
+        const y = pointer.startsWith("top") ? 42 : 16
+        const w = svgWidth - 32
+        const h =
+            svgHeight -
+            32 -
+            (pointer.startsWith("top") ? 28 : 0) -
+            (pointer.startsWith("bottom") ? 28 : 0)
+
+        if (w <= 0 || h <= 0) return
+
+        svg.replaceChildren()
+
+        if (dottedShadow) {
+            drawDottedShadow(svg, x, y, w, h, shadowOffset)
+        }
+
+        const rc = rough.svg(svg)
+
+        const commonOptions = {
+            seed: roughOptions?.seed ?? seedMap[variant],
+            stroke: roughOptions?.stroke ?? borderColor,
+            strokeWidth: roughOptions?.strokeWidth ?? 2,
+            fill: fillColor ?? colors[color],
+            fillStyle: "solid" as const,
+            roughness: roughOptions?.roughness ?? 1.4,
+            bowing: roughOptions?.bowing ?? 0.9,
+        }
+
+        let node: SVGGElement
+
+        if (variant === "bubble") {
+            node = rc.ellipse(x + w / 2, y + h / 2, w, h, commonOptions)
+
+            const tail =
+                pointer === "bottom-left"
+                    ? rc.path(
+                        `
+              M ${x + w * 0.32} ${y + h * 0.86}
+              Q ${x + w * 0.25} ${y + h + 22} ${x + w * 0.12} ${y + h + 28}
+              Q ${x + w * 0.23} ${y + h + 10} ${x + w * 0.25} ${y + h * 0.78}
+              Z
+            `,
+                        commonOptions
+                    )
+                    : rc.path(
+                        `
+              M ${x + w * 0.68} ${y + h * 0.86}
+              Q ${x + w * 0.75} ${y + h + 22} ${x + w * 0.88} ${y + h + 28}
+              Q ${x + w * 0.77} ${y + h + 10} ${x + w * 0.75} ${y + h * 0.78}
+              Z
+            `,
+                        commonOptions
+                    )
+
+            svg.appendChild(tail)
+        } else if (variant === "rounded") {
+            node = rc.path(roundedBubblePath(x, y, w, h, pointer), commonOptions)
+        } else if (variant === "cloud") {
+            node = rc.path(cloudPath(x, y, w, h), commonOptions)
+
+            const dots = pointerDots(x, y, w, h, pointer)
+            dots.forEach((dot) => {
+                svg.appendChild(
+                    rc.circle(dot.cx, dot.cy, dot.r * 2, commonOptions)
+                )
+            })
+        } else if (variant === "thought") {
+            node = rc.ellipse(x + w / 2, y + h / 2, w, h, commonOptions)
+
+            const dots = pointerDots(x, y, w, h, pointer)
+            dots.forEach((dot) => {
+                svg.appendChild(
+                    rc.circle(dot.cx, dot.cy, dot.r * 2, commonOptions)
+                )
+            })
+        } else {
+            node = rc.path(burstPath(x, y, w, h), commonOptions)
+        }
+
+        svg.appendChild(node)
+    }, [
+        variant,
+        pointer,
+        color,
+        borderColor,
+        fillColor,
+        dottedShadow,
+        shadowOffset,
+        roughOptions,
+        children,
+    ])
+
+    return (
+        <div
+            ref={wrapperRef}
+            className={cn("relative overflow-visible", className)}
+            style={{
+                width,
+                height,
+                transform: rotate ? `rotate(${rotate}deg)` : undefined,
+            }}
+        >
+            <svg
+                ref={svgRef}
+                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+                aria-hidden="true"
+            />
+
+            <div
+                className={cn("relative z-10 text-black", contentClassName)}
+                style={{
+                    padding,
+                    paddingTop: pointer.startsWith("top") ? padding + 20 : padding,
+                    paddingBottom: pointer.startsWith("bottom") ? padding + 20 : padding,
+                }}
+            >
+                {children}
+            </div>
+        </div>
+    )
+}
+```
+
+## Usage
+```tsx
+<Toast
+    variant="rounded"
+    color="paper"
+    pointer="left"
+    width={300}
+    dottedShadow={false}
+>
+    <h3 className="text-lg font-semibold">Side Pointer</h3>
+    <p className="mt-2 text-sm">
+        Use left or right pointers for anchored UI.
+    </p>
+</Toast>
+```
+
+## Props
+| Prop | Type | Default | Description |
+|--------|--------|--------|--------|
+| `children` | ReactNode | - | Content rendered inside the toast. |
+| `variant` | ToastVariant | `"bubble"` | Controls the overall toast style and pointer shape. |
+| `pointer` | ToastPointer | `"bottom-left"` | Position of the speech bubble pointer. |
+| `color` | ToastColor | `"paper"` | Controls the toast color theme. |
+| `width` | number | `360` | Sets the width of the toast. |
+| `height` | number | `120` | Sets the height of the toast. |
+| `padding` | number | `24` | Inner spacing of the toast content. |
+| `rotate` | number | `0` | Rotates the toast in degrees. |
+| `dottedShadow` | boolean | `true` | Enables the comic-style dotted shadow effect. |
+| `shadowOffset` | number | `10` | Controls the distance of the shadow from the toast. |
+| `borderColor` | string | `"#111"` | Border color of the toast. |
+| `fillColor` | string | - | Overrides the default color variant fill color. |
+| `className` | string | - | Additional classes applied to the toast wrapper. |
+| `contentClassName` | string | - | Additional classes applied to the content container. |
+| `roughOptions` | RoughToastOptions | - | Custom RoughJS rendering configuration. |
+
+## Rough Options
+The `roughOptions` prop allows you to customize the hand-drawn appearance.
+- `seed` (number): Used to control the randomness of stroke.
+- `stroke` (string): It gives the color to the stroke.
+- `strokeWidth` (number): Sets width of stroke.
+- `roughness` (number): The amount of roughness, higher value means higher roughness.
+- `bowing` (number): The bending effect of the stroke.
+
+```tsx
+<Toast 
+    variant="cloud"
+    color="blue"
+    pointer="bottom-left"
+    dottedShadow={false}
+    height={200}
+    width={300}
+    contentClassName="text-center mt-5"
+    roughOptions={{
+        stroke: "#20a7db",
+        roughness: 0.5
+    }}
+>
+    <h3 className="text-lg font-semibold">Cloud Toast</h3>
+    <p className="text-sm">
+        A cloud shape for messages.
+    </p>
+</Toast>
+```
+
+## Variants
+
+- bubble
+- thought
+- burst
+- rounded
+- cloud
+
+## Positions
+
+- top-left
+- top-right
+- bottom-left
+- bottom-right
+- left
+- right
+
+## Colors
+
+- paper
+- yellow
+- purple
+- green
+- pink
+- blue

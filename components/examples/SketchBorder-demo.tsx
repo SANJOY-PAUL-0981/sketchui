@@ -2,7 +2,7 @@ import { SketchBorder } from "@/components/ui/SketchBorder"
 
 export function DemoSketchBorder() {
     return (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-10 px-2">
             <SketchBorder shape="rounded-rectangle" minHeight={280} width={280}>
                 <h3 className="text-lg font-semibold">Rounded Border</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
