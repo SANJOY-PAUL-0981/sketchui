@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Badge } from "@/components/ui/Badge"
 import { Paper } from "../ui/Paper"
 import { Seperator } from "@/components/ui/Separator"
+import { Tape } from "../ui/Tape"
 
 import drop from "@/public/doodles/drops.png"
 import tick from "@/public/doodles/green-tick.png"
@@ -73,6 +74,16 @@ export function About() {
                                         height={88}
                                         className="absolute -right-16 -top-16 z-20 rotate-12"
                                     />
+
+                                    <div className="absolute left-1/2 -top-4 z-10 -translate-x-1/2 rotate-[-18deg]">
+                                        <Tape
+                                            variant="pink"
+                                            tapeStyle="side-torn"
+                                            width={70}
+                                            height={40}
+                                            rotate={95}
+                                        />
+                                    </div>
 
                                     <div className="rotate-[-8deg] max-md:hidden">
                                         <Paper

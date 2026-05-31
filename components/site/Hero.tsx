@@ -56,6 +56,7 @@ export function Hero() {
                                 roughOptions={{
                                     roughness: 0.75
                                 }}
+                                className="cursor-pointer"
                             >
                                 Get Started →
                             </Button>
@@ -67,6 +68,7 @@ export function Hero() {
                                 width={170}
                                 height={58}
                                 fontSize={18}
+                                className="cursor-pointer"
                             >
                                 View Components
                             </Button>
