@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button"
 import { Avatar } from "@/components/ui/Avatar"
 import { Seperator } from "@/components/ui/Separator"
 import { SketchBorder } from "@/components/ui/SketchBorder"
+import { Toast } from "../ui/Toast"
 
 import quote from "@/public/doodles/quote.png"
 import mail from "@/public/doodles/mail.png"
@@ -37,8 +38,18 @@ const testimonials = [
 
 export function Feedback() {
     const [active, setActive] = useState(0)
-
     const [direction, setDirection] = useState<"next" | "prev">("next")
+
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [message, setMessage] = useState("")
+
+    const [loading, setLoading] = useState(false)
+
+    const [toast, setToast] = useState<{
+        type: "success" | "error"
+        message: string
+    } | null>(null)
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -48,6 +59,7 @@ export function Feedback() {
 
         return () => clearInterval(interval)
     }, [])
+
     useEffect(() => {
         const interval = setInterval(() => {
             setActive((prev) => (prev + 1) % testimonials.length)
@@ -55,6 +67,87 @@ export function Feedback() {
 
         return () => clearInterval(interval)
     }, [])
+
+    useEffect(() => {
+        if (!toast) return
+
+        const timer = setTimeout(() => {
+            setToast(null)
+        }, 5000)
+
+        return () => clearTimeout(timer)
+    }, [toast])
+
+    async function handleSubmit(
+        event: React.FormEvent<HTMLFormElement>
+    ) {
+        event.preventDefault()
+
+        if (loading) return
+
+        const trimmedName = name.trim()
+        const trimmedEmail = email.trim()
+        const trimmedMessage = message.trim()
+
+        if (
+            !trimmedName ||
+            !trimmedEmail ||
+            !trimmedMessage
+        ) {
+            setToast({
+                type: "error",
+                message:
+                    "Please fill name, email and message.",
+            })
+            return
+        }
+
+        setLoading(true)
+
+        try {
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
+                body: JSON.stringify({
+                    name: trimmedName,
+                    email: trimmedEmail,
+                    message: trimmedMessage,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    "Failed to send message."
+                )
+            }
+
+            setToast({
+                type: "success",
+                message:
+                    "Message sent successfully.",
+            })
+
+            setName("")
+            setEmail("")
+            setMessage("")
+        } catch (error) {
+            setToast({
+                type: "error",
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "Something went wrong.",
+            })
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <section className="relative overflow-hidden bg-[#fffbf2] pt-16">
@@ -95,6 +188,32 @@ export function Feedback() {
             />
 
             <div className="relative z-10">
+                {toast && (
+                    <div className="fixed bottom-6 right-6 z-[999]">
+                        <Toast
+                            variant={
+                                toast.type === "success"
+                                    ? "bubble"
+                                    : "cloud"
+                            }
+                            color={
+                                toast.type === "success"
+                                    ? "green"
+                                    : "pink"
+                            }
+                            pointer="bottom-right"
+                            width={390}
+                            height={200}
+                            dottedShadow={false}
+                            rotate={-1}
+                            contentClassName="flex h-full items-center justify-center text-center font-family-gaegu text-xl font-bold"
+                        >
+                            <p className="w-60">
+                            {toast.message}
+                            </p>
+                        </Toast>
+                    </div>
+                )}
                 <div className="mx-auto max-w-7xl px-6">
                     <div className="grid gap-16 lg:grid-cols-2">
                         <div>
@@ -253,7 +372,9 @@ export function Feedback() {
                                 className="absolute -right-30 -top-20 max-md:w-[200px] max-md:-right-15 max-md:top-0"
                             />
 
-                            <form className="mt-5 space-y-5">
+                            <form className="mt-5 space-y-5"
+                                onSubmit={handleSubmit}
+                            >
                                 <div className="grid gap-4 md:grid-cols-2">
                                     <SketchBorder
                                         height={70}
@@ -267,6 +388,10 @@ export function Feedback() {
                                         <input
                                             type="text"
                                             name="name"
+                                            value={name}
+                                            onChange={(e) =>
+                                                setName(e.target.value)
+                                            }
                                             placeholder="Your Name"
                                             className="h-full w-full bg-transparent font-family-gaegu text-lg outline-none placeholder:text-black/50"
                                         />
@@ -284,6 +409,10 @@ export function Feedback() {
                                         <input
                                             type="email"
                                             name="email"
+                                            value={email}
+                                            onChange={(e) =>
+                                                setEmail(e.target.value)
+                                            }
                                             placeholder="Email Address"
                                             className="h-full w-full bg-transparent font-family-gaegu text-lg outline-none placeholder:text-black/50"
                                         />
@@ -302,24 +431,31 @@ export function Feedback() {
                                     <textarea
                                         name="message"
                                         placeholder="Your Message"
+                                        value={message}
+                                        onChange={(e) =>
+                                            setMessage(e.target.value)
+                                        }
                                         className="h-full w-full resize-none bg-transparent font-family-gaegu text-lg outline-none placeholder:text-black/50"
                                     />
                                 </SketchBorder>
 
                                 <Button
                                     type="submit"
+                                    disabled={loading}
                                     variant="pink"
                                     width={180}
                                     height={56}
                                     shape="rounded-rectangle"
-                                    className="font-family-hand"
+                                    className="font-family-hand cursor-pointer"
                                     roughOptions={{
                                         roughness: 0.5,
                                         strokeWidth: 2,
                                         hachureGap: 3
                                     }}
                                 >
-                                    Send Message
+                                    {loading
+                                        ? "Sending..."
+                                        : "Send Message"}
                                 </Button>
                             </form>
                         </div>
