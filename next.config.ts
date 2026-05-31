@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   outputFileTracingIncludes: {
     "/docs/[[...slug]]": ["./content/docs/**/*.mdx"],
+    "/**": ["./content/**/*.mdx"],
   },
 };
 
