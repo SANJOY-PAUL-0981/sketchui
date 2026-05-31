@@ -6,7 +6,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
     return (
         <div className="flex min-h-screen bg-[#fffbf2]">
             <DocsSidebar />
-            <main className="flex-1 min-w-0 px-40 py-10 max-w-7xl">
+            <main className="flex-1 min-w-0 px-40 py-10 max-w-7xl max-xl:px-20 max-lg:px-10 max-md:px-4 max-md:py-6">
                 <MobileDocsNav />
                 <DoodleGridBackground>
                     {children}

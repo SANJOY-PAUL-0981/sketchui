@@ -109,7 +109,7 @@ export const mdxComponents = {
         )
     },
     h2: ({ children }: { children: React.ReactNode }) => (
-        <h2 className="mt-8 text-3xl font-bold font-family-hand pb-4">{children}</h2>
+        <h2 className="mt-8 text-3xl font-bold font-family-hand pb-4 max-md:text-2xl">{children}</h2>
     ),
     ul: ({ children }: { children: React.ReactNode }) => (
         <ul className="ml-6 list-disc space-y-1 font-family-gaegu">{children}</ul>
@@ -118,8 +118,8 @@ export const mdxComponents = {
         <li className="pl-1 font-family-gaegu">{children}</li>
     ),
     table: ({ children }: { children: React.ReactNode }) => (
-        <div className="overflow-x-auto my-6">
-            <table className="w-full border-collapse font-family-gaegu text-[15px]">
+        <div className="overflow-x-auto my-6 max-w-full">
+            <table className="w-full border-collapse font-family-gaegu text-[15px] max-md:text-[13px]">
                 {children}
             </table>
         </div>
@@ -130,12 +130,12 @@ export const mdxComponents = {
         </thead>
     ),
     th: ({ children }: { children: React.ReactNode }) => (
-        <th className="px-4 py-2 text-left font-bold font-family-hand text-lg">
+        <th className="px-4 py-2 text-left font-bold font-family-hand text-lg max-md:px-2 max-md:text-base">
             {children}
         </th>
     ),
     td: ({ children }: { children: React.ReactNode }) => (
-        <td className="px-4 py-2 border-b border-dashed border-current/20">
+        <td className="px-4 py-2 border-b border-dashed border-current/20 max-md:px-2">
             {children}
         </td>
     ),
@@ -145,7 +145,7 @@ export const mdxComponents = {
         </tr>
     ),
     code: ({ children }: { children: React.ReactNode }) => (
-        <code className="font-family-mono text-[13px] px-2 py-0.5 rounded-md bg-amber-100 text-black/80 border border-amber-300">
+        <code className="font-family-mono text-[13px] px-2 py-0.5 rounded-md bg-amber-100 text-black/80 border border-amber-300 break-words">
             {children}
         </code>
     ),

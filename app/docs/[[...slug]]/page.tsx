@@ -54,18 +54,20 @@ export default async function DocsPage({ params }: DocsPageProps) {
     return (
         <article className="max-w-5xl">
             <div className="mb-8">
-                <p className="text-lg font-black uppercase tracking-wide font-family-gaegu text-black/50">
+                <p className="text-lg font-black uppercase tracking-wide font-family-gaegu text-black/50 max-md:text-base">
                     {doc.frontmatter.category}
                 </p>
 
-                <h1 className="mt-2 text-4xl font-black font-family-hand">{doc.frontmatter.title}</h1>
+                <h1 className="mt-2 text-4xl font-black font-family-hand max-md:text-3xl max-sm:text-2xl">
+                    {doc.frontmatter.title}
+                </h1>
 
-                <p className="mt-3 text-xl font-semibold text-black/70 font-family-gaegu">
+                <p className="mt-3 text-xl font-semibold text-black/70 font-family-gaegu max-md:text-lg max-sm:text-base">
                     {doc.frontmatter.description}
                 </p>
             </div>
 
-            <div className="prose prose-neutral max-w-none font-family-gaegu text-lg">
+            <div className="prose prose-neutral max-w-none font-family-gaegu text-lg max-md:text-base">
                 <MDXRemote
                     source={doc.content}
                     components={mdxComponents}

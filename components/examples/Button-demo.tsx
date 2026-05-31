@@ -13,11 +13,14 @@ export function DemoButton() {
                 Purple 3D
             </Button>
             <Button className="cursor-pointer"
+            shape="rounded-rectangle"
                 variant="purple"
                 roughOptions={{
                     fillStyle: "cross-hatch",
                     hachureGap: 7,
                     roughness: 0.75,
+                    hoverRoughness: 0.5,
+                    hoverHachureGap: 2
                 }}
             >
                 Cross Hatch

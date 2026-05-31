@@ -7,7 +7,11 @@ export function DemoTooltip() {
             <Tooltip
                 content="A simple sketch themed tooltip."
             >
-                <Button>
+                <Button
+                roughOptions={{
+                    roughness: 1,
+                    hoverRoughness: 0.5
+                }}>
                     Hover Me
                 </Button>
             </Tooltip>
@@ -25,7 +29,11 @@ export function DemoTooltip() {
                     strokeWidth: 2,
                 }}
             >
-                <Button variant="yellow">
+                <Button variant="yellow"
+                roughOptions={{
+                    roughness: 1,
+                    hoverRoughness: 0.5
+                }}>
                     Bottom Tooltip
                 </Button>
             </Tooltip>
@@ -52,7 +60,13 @@ export function DemoTooltip() {
                     strokeWidth: 2,
                 }}
             >
-                <Button variant="purple">
+                <Button
+                shape="rounded-rectangle" 
+                variant="purple"
+                roughOptions={{
+                    roughness: 1,
+                    hoverRoughness: 0.5
+                }}>
                     Rich Content
                 </Button>
             </Tooltip>

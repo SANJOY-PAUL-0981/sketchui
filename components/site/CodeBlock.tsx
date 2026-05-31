@@ -58,14 +58,14 @@ export function CodeBlock({
                 className
             )}
         >
-            <div className="flex items-center justify-between border-b border-black/10 bg-amber-100 px-4 py-2">
-                <span className="font-family-gaegu text-[11px] font-bold uppercase tracking-widest text-black">
+            <div className="flex items-center justify-between border-b border-black/10 bg-amber-100 px-4 py-2 gap-2">
+                <span className="font-family-gaegu text-[11px] font-bold uppercase tracking-widest text-black shrink-0">
                     {language}
                 </span>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ml-auto">
                     {shouldCollapse && (
-                        <span className="font-family-gaegu text-xs text-black/50">
+                        <span className="font-family-gaegu text-xs text-black/50 max-sm:hidden">
                             {lineCount} lines
                         </span>
                     )}
@@ -73,7 +73,7 @@ export function CodeBlock({
                     <button
                         onClick={handleCopy}
                         className={cn(
-                            "font-family-hand rounded-md border px-3 py-1 text-[12px] transition-all duration-150",
+                            "font-family-hand rounded-md border px-3 py-1 text-[12px] transition-all duration-150 shrink-0",
                             copied
                                 ? "border-green-400 font-bold text-green-600"
                                 : "border-black bg-transparent text-black hover:border-black/50 hover:text-black/50"
@@ -93,9 +93,9 @@ export function CodeBlock({
                         "max-h-[650px] overflow-hidden"
                     )}
                 >
-                    <pre className="overflow-x-auto p-5 text-[13px] leading-[1.75]">
+                    <pre className="overflow-x-auto p-5 max-md:p-3 text-[13px] max-md:text-[12px] leading-[1.75]">
                         <div
-                            className="text-sm"
+                            className="text-sm max-md:text-xs"
                             dangerouslySetInnerHTML={{
                                 __html: html,
                             }}

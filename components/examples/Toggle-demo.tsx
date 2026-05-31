@@ -10,6 +10,7 @@ export function DemoToggle() {
                 checkedColor="#c084fc"
                 checkedIcon={<span>✓</span>}
                 uncheckedIcon={<span>✕</span>}
+                roughness={0.75}
             />
 
             <Toggle
@@ -20,6 +21,7 @@ export function DemoToggle() {
                 sliderShape="rounded"
                 checkedIcon={<span>🌞</span>}
                 uncheckedIcon={<span>🌙</span>}
+                roughness={0.75}
             />
         </div>
     )
