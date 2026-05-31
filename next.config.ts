@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactCompiler: true,
   outputFileTracingIncludes: {
-    "/docs/**": ["./docs/**/*.mdx"],
+    "/docs/[[...slug]]": ["./content/**/*.mdx"],
   },
   pageExtensions: ["ts", "tsx", "md", "mdx"],
 };
