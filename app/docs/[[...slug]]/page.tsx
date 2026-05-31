@@ -13,7 +13,9 @@ type DocsPageProps = {
 export const dynamic = "force-static"
 
 export function generateStaticParams() {
-    return getAllDocs().map((doc) => ({
+    const docs = getAllDocs()
+    console.log("generateStaticParams →", docs.map(d => d.slug))
+    return docs.map((doc) => ({
         slug: doc.slug,
     }))
 }
