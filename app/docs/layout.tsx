@@ -1,6 +1,17 @@
 import { DocsSidebar } from "@/components/site/DocsSidebar"
 import { MobileDocsNav } from "@/components/site/MobileDocsNav"
 import { DoodleGridBackground } from "@/components/ui/DoodleGridBackground"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: {
+        default: "Documentation",
+        template: "%s | SketchUi Docs",
+    },
+
+    description:
+        "Documentation for SketchUi, a hand-drawn React component library.",
+}
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
     return (

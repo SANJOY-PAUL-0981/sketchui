@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.sketchui.sanjoydev.com
+
+# Sitemaps
+Sitemap: https://www.sketchui.sanjoydev.com/sitemap.xml

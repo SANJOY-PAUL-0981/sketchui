@@ -182,7 +182,7 @@ export default function NotFound() {
                                 </Button>
 
                                 <Button
-                                    href="/#projects"
+                                    href="/docs/getting-started/introduction"
                                     variant="yellow"
                                     width={190}
                                     height={52}
@@ -193,7 +193,7 @@ export default function NotFound() {
                                         hoverRoughness: 0.6,
                                     }}
                                 >
-                                    See Projects
+                                    Go To Docs
                                 </Button>
                             </div>
                         </div>

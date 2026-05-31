@@ -16,13 +16,16 @@ export function generateStaticParams() {
     }))
 }
 
-export async function generateMetadata({ params }: DocsPageProps) {
+export async function generateMetadata({
+    params,
+}: DocsPageProps) {
     const { slug } = await params
 
     if (!slug) {
         return {
-            title: "Docs",
-            description: "SketchUi documentation.",
+            title: "Docs | SketchUi",
+            description:
+                "SketchUi documentation.",
         }
     }
 
@@ -33,8 +36,27 @@ export async function generateMetadata({ params }: DocsPageProps) {
     }
 
     return {
-        title: doc.frontmatter.title,
+        title: `${doc.frontmatter.title} | SketchUi`,
         description: doc.frontmatter.description,
+
+        alternates: {
+            canonical: `https://sketchui.dev/docs/${slug.join("/")}`,
+        },
+
+        openGraph: {
+            title: `${doc.frontmatter.title} | SketchUi`,
+            description:
+                doc.frontmatter.description,
+            url: `https://sketchui.dev/docs/${slug.join("/")}`,
+            type: "article",
+        },
+
+        twitter: {
+            card: "summary_large_image",
+            title: `${doc.frontmatter.title} | SketchUi`,
+            description:
+                doc.frontmatter.description,
+        },
     }
 }
 
