@@ -19,7 +19,7 @@ export function DemoSeparator() {
                 frequency={10}
                 roughOptions={{
                     strokeWidth: 2,
-                    roughness: 1.5,
+                    roughness: 0.75,
                 }}
             />
 
@@ -27,10 +27,10 @@ export function DemoSeparator() {
                 variant="curly"
                 color="orange"
                 amplitude={10}
-                frequency={6}
+                frequency={20}
                 roughOptions={{
                     strokeWidth: 2.5,
-                    roughness: 1.2,
+                    roughness: 0.5,
                 }}
             />
         </div>

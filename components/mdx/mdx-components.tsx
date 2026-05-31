@@ -112,7 +112,7 @@ export const mdxComponents = {
         <h2 className="mt-8 text-3xl font-bold font-family-hand pb-4">{children}</h2>
     ),
     ul: ({ children }: { children: React.ReactNode }) => (
-        <ul className="my-4 ml-6 list-disc space-y-1 font-family-gaegu">{children}</ul>
+        <ul className="ml-6 list-disc space-y-1 font-family-gaegu">{children}</ul>
     ),
     li: ({ children }: { children: React.ReactNode }) => (
         <li className="pl-1 font-family-gaegu">{children}</li>

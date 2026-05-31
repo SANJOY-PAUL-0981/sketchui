@@ -626,6 +626,74 @@ export function Calender({
     )
 }
 ```
+## CSS
+First create a `style` folder in the `ui` folder and paste the CSS as `calender.css` name.
+```css
+@keyframes sketch-calendar-slide-next {
+    from {
+        opacity: 0;
+        transform: translateX(18px) rotate(1deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg);
+    }
+}
+
+@keyframes sketch-calendar-slide-prev {
+    from {
+        opacity: 0;
+        transform: translateX(-18px) rotate(-1deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg);
+    }
+}
+
+@keyframes sketch-calendar-flip {
+    from {
+        opacity: 0;
+        transform: rotateX(12deg) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotateX(0deg) translateY(0);
+    }
+}
+
+@keyframes sketch-calendar-fade {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-sketch-calendar-slide-next {
+    animation: sketch-calendar-slide-next 220ms ease-out;
+}
+
+.animate-sketch-calendar-slide-prev {
+    animation: sketch-calendar-slide-prev 220ms ease-out;
+}
+
+.animate-sketch-calendar-flip {
+    animation: sketch-calendar-flip 240ms ease-out;
+    transform-origin: top center;
+}
+
+.animate-sketch-calendar-fade {
+    animation: sketch-calendar-fade 180ms ease-out;
+}
+```
 
 ## Usage
 ```tsx            
@@ -702,7 +770,6 @@ The `roughOptions` prop allows you to customize the hand-drawn appearance.
 />
 ```
 ## Variants
-
 - paper
 - white
 - yellow
@@ -716,18 +783,15 @@ The `roughOptions` prop allows you to customize the hand-drawn appearance.
 - sky
 
 ## Shapes
-
 - rectangle
 - rounded-rectangle
 
 
 ## Border Styles
-
 - solid
 - dashed
 
 ## Animations
-
 - slide
 - flip
 - fade

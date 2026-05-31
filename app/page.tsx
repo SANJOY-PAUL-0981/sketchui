@@ -1,16 +1,21 @@
 import Image from "next/image";
-import { DoodleGridBackground } from "@/components/ui/DoodleGridBackground";
-import { DemoSketchBorder } from "@/components/examples/SketchBorder-demo";
-
-import pf from "@/public/pf.png"
+import { Navbar } from "@/components/site/Navbar";
+import { Hero } from "@/components/site/Hero";
+import { About } from "@/components/site/About";
+import { Features } from "@/components/site/Feature";
+import { Feedback } from "@/components/site/Feedback";
+import { Footer } from "@/components/site/Footer";
 
 export default function Home() {
 
   return (
-    <main>
-      <DoodleGridBackground className="font-family-gaegu text-lg">
-        <DemoSketchBorder />
-      </DoodleGridBackground>
+    <main className="bg-[#fffbf2]">
+      <Navbar />
+      <Hero />
+      <About />
+      <Features />
+      <Feedback />
+      <Footer />
     </main>
   );
 }

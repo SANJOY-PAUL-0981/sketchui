@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-    --font-family-sans: "Nunito", sans-serif;
-    --font-family-mono: "Geist Mono", monospace;
-    --font-family-hand: "Patrick Hand", cursive;
-    --font-family-gaegu: "Gaegu", cursive;
-    --font-family-lacquer: "Lacquer", cursive;
-    --font-family-indie: "Indie Flower", cursive;
+  --font-family-sans: "Nunito", sans-serif;
+  --font-family-mono: "Geist Mono", monospace;
+  --font-family-hand: "Patrick Hand", cursive;
+  --font-family-gaegu: "Gaegu", cursive;
+  --font-family-lacquer: "Lacquer", cursive;
+  --font-family-indie: "Indie Flower", cursive;
+  --font-family-shantell: "Shantell Sans", cursive;
 }
 
 @layer utilities {
@@ -14,6 +15,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -31,4 +33,32 @@
 .shiki code {
   font-size: 14px;
   line-height: 1.8;
+}
+
+@keyframes testimonial-slide {
+    0% {
+        opacity: 0;
+        transform: translateX(80px) rotate(2deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg);
+    }
+}
+
+@keyframes testimonial-slide {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-testimonial-slide {
+    animation: testimonial-slide 500ms ease-out;
 }

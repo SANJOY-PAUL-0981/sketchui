@@ -67,7 +67,7 @@ export function SketchBorder({
     children,
     width = "100%",
     height,
-    minHeight = 120,
+    minHeight,
     x = 6,
     y = 6,
     shape = "rectangle",

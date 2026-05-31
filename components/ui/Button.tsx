@@ -25,7 +25,7 @@ type ButtonProps = {
     href?: string
     external?: boolean
     onClick?: () => void
-    variant?: ButtonVariant 
+    variant?: ButtonVariant
     className?: string
     textClassName?: string
     roughOptions?: RoughButtonOptions
@@ -57,6 +57,9 @@ type ButtonProps = {
 
     type?: "button" | "submit" | "reset"
     disabled?: boolean
+
+    shape?: "rectangle" | "rounded-rectangle"
+    cornerRadius?: number
 }
 
 const presetColors: Record<string, string> = {
@@ -76,6 +79,29 @@ const fontWeightMap = {
     medium: 500,
     semibold: 600,
     bold: 700,
+}
+
+function roundedRectPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+) {
+    const r = Math.min(radius, width / 2, height / 2)
+
+    return `
+        M ${x + r} ${y}
+        L ${x + width - r} ${y}
+        Q ${x + width} ${y} ${x + width} ${y + r}
+        L ${x + width} ${y + height - r}
+        Q ${x + width} ${y + height} ${x + width - r} ${y + height}
+        L ${x + r} ${y + height}
+        Q ${x} ${y + height} ${x} ${y + height - r}
+        L ${x} ${y + r}
+        Q ${x} ${y} ${x + r} ${y}
+        Z
+    `
 }
 
 function polygonPath(points: [number, number][]) {
@@ -125,6 +151,8 @@ export function Button({
     depthStrokeWidth,
     type = "button",
     disabled = false,
+    shape = "rectangle",
+    cornerRadius = 12,
 }: ButtonProps) {
     const svgRef = useRef<SVGSVGElement | null>(null)
     const [isHovered, setIsHovered] = useState(false)
@@ -214,17 +242,47 @@ export function Button({
             svg.appendChild(bottomShape)
         }
 
-        const frontShape = rc.rectangle(frontX, frontY, width, height, {
-            seed: resolvedSeed,
-            stroke,
-            strokeWidth,
-            fill: buttonColor,
-            fillStyle: roughOptions?.fillStyle ?? "hachure",
-            hachureGap,
-            hachureAngle: roughOptions?.hachureAngle ?? -10,
-            roughness,
-            bowing: roughOptions?.bowing ?? 0.8,
-        })
+        const frontShape =
+            shape === "rounded-rectangle"
+                ? rc.path(
+                    roundedRectPath(
+                        frontX,
+                        frontY,
+                        width,
+                        height,
+                        cornerRadius
+                    ),
+                    {
+                        seed: resolvedSeed,
+                        stroke,
+                        strokeWidth,
+                        fill: buttonColor,
+                        fillStyle: roughOptions?.fillStyle ?? "hachure",
+                        hachureGap,
+                        hachureAngle:
+                            roughOptions?.hachureAngle ?? -10,
+                        roughness,
+                        bowing: roughOptions?.bowing ?? 0.8,
+                    }
+                )
+                : rc.rectangle(
+                    frontX,
+                    frontY,
+                    width,
+                    height,
+                    {
+                        seed: resolvedSeed,
+                        stroke,
+                        strokeWidth,
+                        fill: buttonColor,
+                        fillStyle: roughOptions?.fillStyle ?? "hachure",
+                        hachureGap,
+                        hachureAngle:
+                            roughOptions?.hachureAngle ?? -10,
+                        roughness,
+                        bowing: roughOptions?.bowing ?? 0.8,
+                    }
+                )
 
         svg.appendChild(frontShape)
     }, [
@@ -248,6 +306,8 @@ export function Button({
         depthHachureAngle,
         depthRoughness,
         depthStrokeWidth,
+        shape,
+        cornerRadius
     ])
 
     const angleRad = (depthAngle * Math.PI) / 180

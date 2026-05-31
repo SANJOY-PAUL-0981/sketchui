@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Nunito, Patrick_Hand, Gaegu, Geist_Mono, Lacquer, Indie_Flower } from "next/font/google"
+import { Nunito, Patrick_Hand, Gaegu, Geist_Mono, Lacquer, Indie_Flower, Shantell_Sans } from "next/font/google"
 import "./globals.css";
 
 const nunito = Nunito({
@@ -43,6 +43,12 @@ const geistMono = Geist_Mono({
   display: "swap",
 })
 
+export const shantellSans = Shantell_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-shantell-sans",
+})
+
 
 export const metadata: Metadata = {
   title: "SketchUi",
@@ -57,7 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${nunito.variable} ${patrickHand.variable} ${gaegu.variable} ${geistMono.variable} ${lacquer.variable} ${indieFlower.variable} h-full antialiased`}
+      className={`${nunito.variable} ${patrickHand.variable} ${gaegu.variable} ${geistMono.variable} ${lacquer.variable} ${indieFlower.variable} ${shantellSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
