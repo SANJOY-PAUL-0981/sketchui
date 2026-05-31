@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
   outputFileTracingIncludes: {
-    "/docs/[[...slug]]": ["./content/docs/**/*.mdx"],
-    "/**": ["./content/**/*.mdx"],
+    "/docs/**": ["./content/docs/**/*.mdx"],
   },
+  pageExtensions: ["ts", "tsx", "md", "mdx"],
 };
 
 export default nextConfig;

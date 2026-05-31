@@ -10,7 +10,7 @@ type DocsPageProps = {
     }>
 }
 
-export const dynamic = "force-static"
+export const dynamicParams = true
 
 export function generateStaticParams() {
     const docs = getAllDocs()
