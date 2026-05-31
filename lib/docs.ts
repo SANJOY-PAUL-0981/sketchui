@@ -52,7 +52,7 @@ export function getAllDocs(): Doc[] {
             const { data, content } = matter(raw)
 
             const relativePath = path.relative(DOCS_PATH, filePath)
-            const slug = relativePath.replace(/\.mdx$/, "").split(path.sep)
+            const slug = relativePath.replace(/\.mdx$/, "").split(/[\\/]/)
 
             return {
                 slug,
