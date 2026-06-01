@@ -75,7 +75,7 @@ export function About() {
                                         className="absolute -right-16 -top-16 z-20 rotate-12"
                                     />
 
-                                    <div className="absolute left-1/2 -top-4 z-10 -translate-x-1/2 rotate-[-18deg]">
+                                    <div className="absolute left-1/2 -top-4 z-10 -translate-x-1/2 rotate-[-18deg] max-md:hidden">
                                         <Tape
                                             variant="pink"
                                             tapeStyle="side-torn"
