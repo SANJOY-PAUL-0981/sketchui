@@ -10,6 +10,7 @@ import { Seperator } from "../ui/Separator"
 const GETTING_STARTED = [
     { name: "Introduction", href: "/docs/getting-started/introduction" },
     { name: "Installation", href: "/docs/getting-started/installation" },
+    { name: "Fonts", href: "/docs/getting-started/fonts" },
     { name: "Contribute", href: "/docs/getting-started/contribute" },
 ]
 
