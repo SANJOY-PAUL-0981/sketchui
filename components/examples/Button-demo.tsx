@@ -10,7 +10,7 @@ export function DemoButton() {
                 hoverRoughness: 0.5,
             }}
             >
-                Purple 3D
+                Green 3D
             </Button>
             <Button className="cursor-pointer"
             shape="rounded-rectangle"
