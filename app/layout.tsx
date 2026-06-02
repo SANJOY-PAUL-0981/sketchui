@@ -53,6 +53,10 @@ export const shantellSans = Shantell_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://sketchui.sanjoydev.com"),
 
+  icons: {
+    icon: "/favicon.ico",
+  },
+
   title: {
     default: "SketchUI",
     template: "%s | SketchUI",
