@@ -9,6 +9,10 @@ export const metadata: Metadata = {
         template: "%s | SketchUi Docs",
     },
 
+    verification: {
+      google: "kUKSMU6xUgjz5M3Nko0oE7vM13axrASTSIG__iETTko"
+    },
+
     description:
         "Documentation for SketchUi, a hand-drawn React component library.",
 }

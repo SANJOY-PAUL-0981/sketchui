@@ -65,6 +65,10 @@ export const metadata: Metadata = {
   description:
     "SketchUI is an open source React component library featuring hand-drawn sketch themed UI components powered by Rough.js. What makes it different? Its hand drawn, imperfectionism theme with flexible customisation ability of the components makes it different.",
 
+    verification: {
+      google: "kUKSMU6xUgjz5M3Nko0oE7vM13axrASTSIG__iETTko"
+    },
+
   keywords: [
     "Sketch UI",
     "SketchUi",
