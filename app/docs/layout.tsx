@@ -6,7 +6,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
     title: {
         default: "Documentation",
-        template: "%s | SketchUi Docs",
+        template: "%s | SketchUI Docs",
     },
 
     verification: {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     },
 
     description:
-        "Documentation for SketchUi, a hand-drawn React component library.",
+        "Documentation for SketchUI, a hand-drawn React component library.",
 }
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {

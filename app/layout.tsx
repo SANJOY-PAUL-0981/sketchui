@@ -71,12 +71,17 @@ export const metadata: Metadata = {
 
   keywords: [
     "Sketch UI",
+    "SketchUI",
+    "SketchUI",
+    "SketchUI",
+    "sketchui",
+    "sketch ui",
     "SketchUi",
     "Sketchui",
-    "sketchUi",
     "React UI Library",
-    "Hand Drawn Components",
-    "Doodle components",
+    "Sketch themed ui library for react",
+    "Hand Drawn Components react",
+    "Doodle components react",
     "Hand Drawn Components for react",
     "Doodle components for react",
     "React Hand Drawn Components",
@@ -96,7 +101,7 @@ export const metadata: Metadata = {
   creator: "Sanjoy Paul",
 
   openGraph: {
-    title: "SketchUi",
+    title: "SketchUI",
     description:
       "Hand-drawn React component library powered by Rough.js.",
     url: "https://sketchui.sanjoydev.com",
@@ -107,9 +112,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "SketchUi",
+    title: "SketchUI",
     description:
       "Hand-drawn React component library powered by Rough.js.",
+    images: ["/og.png"]
   },
 
   robots: {
@@ -140,7 +146,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              name: "SketchUi",
+              name: "SketchUI",
               applicationCategory: "DeveloperApplication",
               operatingSystem: "Any",
               url: "https://sketchui.sanjoydev.com",
