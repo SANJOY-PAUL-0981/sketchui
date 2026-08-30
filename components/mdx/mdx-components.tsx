@@ -13,6 +13,8 @@ import { DemoSectionTitle } from "../examples/SectionTitle-demo"
 import { DemoSeparator } from "../examples/Separator-demo"
 import { DemoToggle } from "../examples/Toggle-demo"
 import { DemoTooltip } from "../examples/Tooltip-demo"
+import { DemoComboBox } from "../examples/ComboBox-demo"
+import { DemoCheckbox } from "../examples/Checkbox-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -28,6 +30,8 @@ import { Tape } from "../ui/Tape"
 import { Toast } from "../ui/Toast"
 import { Toggle } from "../ui/Toggle"
 import { Tooltip } from "../ui/Tooltip"
+import { Combobox } from "../ui/ComboBox"
+import { Checkbox } from "../ui/Checkbox"
 import { DemoDoodleGridBackground } from "../examples/DoodleGridBackground-demo"
 import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
@@ -50,7 +54,9 @@ const demos = {
     "section-title-demo": DemoSectionTitle,
     "separator-demo": DemoSeparator,
     "toggle-demo": DemoToggle,
-    "tooltip-demo": DemoTooltip
+    "tooltip-demo": DemoTooltip,
+    "checkbox-demo": DemoCheckbox,
+    "combobox-demo": DemoComboBox
 }
 
 type DemoName = keyof typeof demos
@@ -91,6 +97,8 @@ export const mdxComponents = {
     Toast,
     Toggle,
     Tooltip,
+    Checkbox,
+    Combobox,
     DemoDoodleGridBackground,
     DemoNotebookBackground,
     Link,

@@ -131,12 +131,28 @@ export const componentRegistry: ComponentRegistryItem[] = [
         order: 15
     },
     {
+        name: "Combobox",
+        slug: "combobox",
+        description: "A hand-drawn combobox component.",
+        href: "/docs/components/combobox",
+        status: "ready",
+        order: 16
+    },
+    {
+        name: "Checkbox",
+        slug: "checkbox",
+        description: "A hand-drawn checkbox component.",
+        href: "/docs/components/checkbox",
+        status: "ready",
+        order: 17
+    },
+    {
         name: "DoodleGridBackground",
         slug: "doodle_grid_background",
         description: "A doodle grid paper themed window background.",
         href: "/docs/components/doodle_grid_background",
         status: "ready",
-        order: 16
+        order: 18
     },
     {
         name: "NotebookBackground",
@@ -144,7 +160,7 @@ export const componentRegistry: ComponentRegistryItem[] = [
         description: "A ruled notebook themed window backkground.",
         href: "/docs/components/notebook_background",
         status: "ready",
-        order: 17
+        order: 19
     },
 
 ]

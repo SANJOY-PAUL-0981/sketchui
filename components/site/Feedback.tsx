@@ -17,10 +17,10 @@ import mail from "@/public/doodles/mail.png"
 
 const testimonials = [
     {
-        name: "John Doe",
-        role: "Indie Developer",
+        name: "dhruv",
+        role: "@atetoon",
         message:
-            "SketchUi makes my interfaces stand out. The hand-drawn style is just perfect!",
+            "SketchUI was the first component library I saw and instantly decided to use for a project, and that became AskAMI. I loved its hand-drawn, artistic style, and the components were easy to customize and fit my design really well.",
     },
     {
         name: "Sarah Chen",
@@ -266,7 +266,7 @@ export function Feedback() {
                                         />
 
                                         <div className="mt-10 flex-1">
-                                            <p className="font-family-gaegu text-2xl leading-relaxed">
+                                            <p className="font-family-gaegu text-lg leading-relaxed">
                                                 "
                                                 {
                                                     testimonials[active]
