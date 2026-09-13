@@ -12,6 +12,8 @@ const GETTING_STARTED = [
     { name: "Installation", href: "/docs/getting-started/installation" },
     { name: "Fonts", href: "/docs/getting-started/fonts" },
     { name: "Contribute", href: "/docs/getting-started/contribute" },
+    { name: "Templates", href: "/docs/getting-started/templates" },
+
 ]
 
 export function MobileDocsNav() {

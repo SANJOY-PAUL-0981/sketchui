@@ -12,6 +12,8 @@ const GETTING_STARTED = [
     { name: "Installation", href: "/docs/getting-started/installation" },
     { name: "Fonts", href: "/docs/getting-started/fonts" },
     { name: "Contribute", href: "/docs/getting-started/contribute" },
+    { name: "Templates", href: "/docs/getting-started/templates" },
+
 ]
 
 export function DocsSidebar() {
@@ -57,12 +59,12 @@ export function DocsSidebar() {
             </NavSection>
 
             <Seperator
-            variant="dashed"
-            roughOptions={{
-                roughness: 1,
-                strokeWidth: 2,
-                seed: 101,
-            }}
+                variant="dashed"
+                roughOptions={{
+                    roughness: 1,
+                    strokeWidth: 2,
+                    seed: 101,
+                }}
             />
 
             <NavSection title="Components">

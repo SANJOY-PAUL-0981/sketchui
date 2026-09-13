@@ -39,7 +39,7 @@ import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
 import Link from "next/link"
 import { Pre } from "../site/Pre"
-
+import { TemplateCard } from "../site/TemplateCard"
 
 const demos = {
     "button-demo": DemoButton,
@@ -86,6 +86,7 @@ export function ComponentPreview({ name }: { name: DemoName }) {
 
 export const mdxComponents = {
     ComponentPreview,
+    TemplateCard,
     Avatar,
     Badge,
     Button,
@@ -102,7 +103,7 @@ export const mdxComponents = {
     Tooltip,
     Checkbox,
     Combobox,
-    DemoAlert,
+    Alert,
     DemoDoodleGridBackground,
     DemoNotebookBackground,
     Link,

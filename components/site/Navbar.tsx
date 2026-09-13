@@ -12,6 +12,7 @@ const NAV_BOTTOM_LINE_STYLE = "wavy"
 const navItems = [
     { label: "Docs", href: "/docs/getting-started/introduction" },
     { label: "Components", href: "/docs/components/button" },
+    { label: "Templates", href: "/docs/getting-started/templates" }
 ]
 
 function getWavyPath(width: number, y: number) {
