@@ -147,12 +147,20 @@ export const componentRegistry: ComponentRegistryItem[] = [
         order: 17
     },
     {
+        name: "Alert",
+        slug: "alert",
+        description: "A hand-drawn alert component.",
+        href: "/docs/components/alert",
+        status: "ready",
+        order: 18
+    },
+    {
         name: "DoodleGridBackground",
         slug: "doodle_grid_background",
         description: "A doodle grid paper themed window background.",
         href: "/docs/components/doodle_grid_background",
         status: "ready",
-        order: 18
+        order: 19
     },
     {
         name: "NotebookBackground",
@@ -160,7 +168,7 @@ export const componentRegistry: ComponentRegistryItem[] = [
         description: "A ruled notebook themed window backkground.",
         href: "/docs/components/notebook_background",
         status: "ready",
-        order: 19
+        order: 20
     },
 
 ]
