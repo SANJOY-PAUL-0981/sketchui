@@ -155,12 +155,28 @@ export const componentRegistry: ComponentRegistryItem[] = [
         order: 18
     },
     {
+        name: "Input",
+        slug: "input",
+        description: "A hand drawn input field",
+        href: "/docs/components/input",
+        status: "ready",
+        order: 19
+    },
+    {
+        name: "Textarea",
+        slug: "textarea",
+        description: "A hand drawn textarea field",
+        href: "/docs/components/textarea",
+        status: "ready",
+        order: 20
+    },
+    {
         name: "DoodleGridBackground",
         slug: "doodle_grid_background",
         description: "A doodle grid paper themed window background.",
         href: "/docs/components/doodle_grid_background",
         status: "ready",
-        order: 19
+        order: 21
     },
     {
         name: "NotebookBackground",
@@ -168,7 +184,7 @@ export const componentRegistry: ComponentRegistryItem[] = [
         description: "A ruled notebook themed window backkground.",
         href: "/docs/components/notebook_background",
         status: "ready",
-        order: 20
+        order: 22
     },
 
 ]

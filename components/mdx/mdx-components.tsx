@@ -16,6 +16,8 @@ import { DemoTooltip } from "../examples/Tooltip-demo"
 import { DemoComboBox } from "../examples/ComboBox-demo"
 import { DemoCheckbox } from "../examples/Checkbox-demo"
 import { DemoAlert } from "../examples/Alert-demo"
+import { DemoInput } from "../examples/Input-demo"
+import { DemoTextArea } from "../examples/Textarea-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -34,6 +36,8 @@ import { Tooltip } from "../ui/Tooltip"
 import { Combobox } from "../ui/ComboBox"
 import { Checkbox } from "../ui/Checkbox"
 import { Alert } from "../ui/Alert"
+import { Input } from "../ui/Input"
+import { Textarea } from "../ui/Textarea"
 import { DemoDoodleGridBackground } from "../examples/DoodleGridBackground-demo"
 import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
@@ -59,7 +63,9 @@ const demos = {
     "tooltip-demo": DemoTooltip,
     "checkbox-demo": DemoCheckbox,
     "combobox-demo": DemoComboBox,
-    "alert-demo": DemoAlert
+    "alert-demo": DemoAlert,
+    "input-demo": DemoInput,
+    "textarea-demo": DemoTextArea
 }
 
 type DemoName = keyof typeof demos
@@ -104,6 +110,8 @@ export const mdxComponents = {
     Checkbox,
     Combobox,
     Alert,
+    Input,
+    Textarea,
     DemoDoodleGridBackground,
     DemoNotebookBackground,
     Link,
