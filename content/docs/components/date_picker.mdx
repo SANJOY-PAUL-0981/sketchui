@@ -1,0 +1,596 @@
+---
+title: DatePicker
+description: A hand-drawn date picker with a sketchy trigger and a Calender popover.
+category: Components
+status: ready
+order: 23
+---
+
+<ComponentPreview name="date-picker-demo" />
+
+DatePicker is a composition of a sketch trigger button and the existing [Calender](/docs/components/calender) component. Clicking the trigger opens a popover with the calendar; picking a date closes it and updates the trigger label. It follows the shadcn/ui date picker pattern, but uses only SketchUI components and RoughJS — no new dependency.
+
+## Code
+```tsx
+"use client"
+
+import {
+    useEffect,
+    useId,
+    useRef,
+    useState,
+    type KeyboardEvent as ReactKeyboardEvent,
+} from "react"
+import rough from "roughjs"
+import { cn } from "@/lib/utils"
+import { Calender } from "./Calender"
+
+type DatePickerVariant = "paper" | "white" | "yellow" | "purple" | "green" | "pink" | "blue" | "gray" | "orange" | "red" | "sky"
+
+type DatePickerShape = "rectangle" | "rounded-rectangle"
+
+type DatePickerBorderStyle = "solid" | "dashed"
+
+type DatePickerPlacement = "bottom-start" | "bottom-end" | "top-start" | "top-end"
+
+type DatePickerPageAnimation = "slide" | "flip" | "fade" | "none"
+
+type RoughDatePickerOptions = {
+    seed?: number
+    stroke?: string
+    strokeWidth?: number
+    fill?: string
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
+    hachureGap?: number
+    hachureAngle?: number
+    roughness?: number
+    bowing?: number
+}
+
+type DatePickerProps = {
+    value?: Date
+    defaultValue?: Date
+    onChange?: (date: Date | undefined) => void
+    defaultOpen?: boolean
+    placeholder?: string
+    formatDate?: (date: Date) => string
+    clearable?: boolean
+    closeOnSelect?: boolean
+    label?: string
+    disabled?: boolean
+
+    variant?: DatePickerVariant
+    shape?: DatePickerShape
+    borderStyle?: DatePickerBorderStyle
+    placement?: DatePickerPlacement
+
+    width?: number | string
+    height?: number
+    calendarWidth?: number | string
+
+    weekStartsOn?: 0 | 1
+    minDate?: Date
+    maxDate?: Date
+    disabledDates?: Date[]
+    isDateDisabled?: (date: Date) => boolean
+
+    selectedColor?: string
+    showShadow?: boolean
+    pageAnimation?: DatePickerPageAnimation
+
+    borderColor?: string
+    fillColor?: string
+    textColor?: string
+
+    roughOptions?: RoughDatePickerOptions
+
+    className?: string
+    triggerClassName?: string
+    popoverClassName?: string
+    calendarClassName?: string
+    clearButtonClassName?: string
+}
+
+const colors: Record<DatePickerVariant, string> = {
+    paper: "#fffbf2",
+    white: "#ffffff",
+    yellow: "#fef3c7",
+    purple: "#d8c7ff",
+    green: "#bbf7d0",
+    pink: "#fbcfe8",
+    blue: "#bfdbfe",
+    gray: "#e5e7eb",
+    orange: "#fed7aa",
+    red: "#fecaca",
+    sky: "#bae6fd",
+}
+
+const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+]
+
+function defaultFormatDate(date: Date) {
+    return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+}
+
+function roundedRectPath(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+) {
+    const r = Math.min(radius, width / 2, height / 2)
+
+    return `
+        M ${x + r} ${y}
+        L ${x + width - r} ${y}
+        Q ${x + width} ${y} ${x + width} ${y + r}
+        L ${x + width} ${y + height - r}
+        Q ${x + width} ${y + height} ${x + width - r} ${y + height}
+        L ${x + r} ${y + height}
+        Q ${x} ${y + height} ${x} ${y + height - r}
+        L ${x} ${y + r}
+        Q ${x} ${y} ${x + r} ${y}
+        Z
+    `
+}
+
+function getPlacementClasses(placement: DatePickerPlacement) {
+    if (placement === "bottom-start") {
+        return "left-0 top-full mt-2 origin-top-left"
+    }
+
+    if (placement === "bottom-end") {
+        return "right-0 top-full mt-2 origin-top-right"
+    }
+
+    if (placement === "top-start") {
+        return "left-0 bottom-full mb-2 origin-bottom-left"
+    }
+
+    return "right-0 bottom-full mb-2 origin-bottom-right"
+}
+
+function CalendarDoodle() {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            className="size-4 shrink-0"
+            fill="none"
+            aria-hidden="true"
+        >
+            <path
+                d="M4 6.5 19 6 M4 6.5 4 19 M19 6 19 19 M4 19 19 19"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M4 10.5 19 10.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+            />
+            <path
+                d="M8 4.5 8 8 M15 4.5 15 8"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+            />
+            <path
+                d="M8.5 14.5 8.7 14.5 M12 14.5 12.2 14.5 M15.5 14.5 15.7 14.5"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+            />
+        </svg>
+    )
+}
+
+export function DatePicker({
+    value,
+    defaultValue,
+    onChange,
+    defaultOpen = false,
+    placeholder = "Pick a date",
+    formatDate,
+    clearable = true,
+    closeOnSelect = true,
+    label = "Pick a date",
+    disabled = false,
+
+    variant = "paper",
+    shape = "rounded-rectangle",
+    borderStyle = "solid",
+    placement = "bottom-start",
+
+    width = 260,
+    height = 48,
+    calendarWidth = 300,
+
+    weekStartsOn = 0,
+    minDate,
+    maxDate,
+    disabledDates,
+    isDateDisabled,
+
+    selectedColor = "#fde047",
+    showShadow = false,
+    pageAnimation = "slide",
+
+    borderColor,
+    fillColor,
+    textColor = "#111",
+
+    roughOptions,
+
+    className,
+    triggerClassName,
+    popoverClassName,
+    calendarClassName,
+    clearButtonClassName,
+}: DatePickerProps) {
+    const wrapperRef = useRef<HTMLSpanElement | null>(null)
+    const triggerRef = useRef<HTMLButtonElement | null>(null)
+    const svgRef = useRef<SVGSVGElement | null>(null)
+
+    const popoverId = useId()
+
+    const isControlled = value !== undefined
+    const [internalValue, setInternalValue] = useState<Date | undefined>(defaultValue)
+    const [open, setOpen] = useState(defaultOpen)
+
+    const selected = isControlled ? value : internalValue
+    const radius = Math.min(14, height / 2 - 2)
+
+    useEffect(() => {
+        const trigger = triggerRef.current
+        const svg = svgRef.current
+
+        if (!trigger || !svg) return
+
+        const draw = () => {
+            const rect = trigger.getBoundingClientRect()
+            const drawWidth = rect.width
+            const drawHeight = rect.height
+
+            if (drawWidth <= 0 || drawHeight <= 0) return
+
+            svg.replaceChildren()
+            svg.setAttribute("viewBox", `0 0 ${drawWidth} ${drawHeight}`)
+
+            const rc = rough.svg(svg)
+
+            const options = {
+                seed: roughOptions?.seed ?? 330,
+                stroke: roughOptions?.stroke ?? borderColor ?? "#111",
+                strokeWidth: roughOptions?.strokeWidth ?? 1.8,
+                fill: roughOptions?.fill ?? fillColor ?? colors[variant],
+                fillStyle: roughOptions?.fillStyle ?? "solid",
+                hachureGap: roughOptions?.hachureGap ?? 7,
+                hachureAngle: roughOptions?.hachureAngle ?? -10,
+                roughness: roughOptions?.roughness ?? 1.4,
+                bowing: roughOptions?.bowing ?? 0.8,
+                strokeLineDash: borderStyle === "dashed" ? [8, 6] : undefined,
+            }
+
+            const node =
+                shape === "rounded-rectangle"
+                    ? rc.path(
+                        roundedRectPath(2, 2, drawWidth - 4, drawHeight - 4, radius),
+                        options
+                    )
+                    : rc.rectangle(2, 2, drawWidth - 4, drawHeight - 4, options)
+
+            svg.appendChild(node)
+        }
+
+        draw()
+
+        const observer = new ResizeObserver(draw)
+        observer.observe(trigger)
+
+        return () => observer.disconnect()
+    }, [variant, shape, borderStyle, borderColor, fillColor, radius, roughOptions])
+
+    useEffect(() => {
+        if (!open) return
+
+        function handlePointerDown(event: MouseEvent) {
+            if (
+                wrapperRef.current &&
+                !wrapperRef.current.contains(event.target as Node)
+            ) {
+                setOpen(false)
+            }
+        }
+
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                setOpen(false)
+                triggerRef.current?.focus()
+            }
+        }
+
+        document.addEventListener("mousedown", handlePointerDown)
+        document.addEventListener("keydown", handleKeyDown)
+
+        return () => {
+            document.removeEventListener("mousedown", handlePointerDown)
+            document.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [open])
+
+    function handleSelect(date: Date) {
+        if (!isControlled) {
+            setInternalValue(date)
+        }
+
+        onChange?.(date)
+
+        if (closeOnSelect) {
+            setOpen(false)
+            triggerRef.current?.focus()
+        }
+    }
+
+    function handleClear() {
+        if (!isControlled) {
+            setInternalValue(undefined)
+        }
+
+        onChange?.(undefined)
+        setOpen(false)
+        triggerRef.current?.focus()
+    }
+
+    function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+        if (event.key === "ArrowDown" && !disabled) {
+            event.preventDefault()
+            setOpen(true)
+        }
+    }
+
+    return (
+        <span
+            ref={wrapperRef}
+            className={cn("relative inline-flex", className)}
+        >
+            <button
+                ref={triggerRef}
+                type="button"
+                aria-label={label}
+                aria-haspopup="dialog"
+                aria-expanded={open}
+                aria-controls={open ? popoverId : undefined}
+                disabled={disabled}
+                onClick={() => setOpen((prev) => !prev)}
+                onKeyDown={handleTriggerKeyDown}
+                className={cn(
+                    "relative inline-flex items-center justify-start rounded-lg px-3 outline-none",
+                    "font-family-gaegu text-base font-bold text-black",
+                    "transition-transform duration-150 ease-out",
+                    "focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                    "disabled:cursor-not-allowed disabled:opacity-60",
+                    !disabled && "active:scale-[0.98]",
+                    triggerClassName
+                )}
+                style={{
+                    width,
+                    height,
+                }}
+            >
+                <svg
+                    ref={svgRef}
+                    className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+                    aria-hidden="true"
+                />
+
+                <span
+                    className="relative z-10 flex items-center gap-2 truncate"
+                    style={{ color: textColor }}
+                >
+                    <CalendarDoodle />
+                    <span className={cn("truncate", !selected && "text-black/45")}>
+                        {selected
+                            ? (formatDate ?? defaultFormatDate)(selected)
+                            : placeholder}
+                    </span>
+                </span>
+            </button>
+
+            {open && (
+                <div
+                    id={popoverId}
+                    role="dialog"
+                    aria-label="Choose a date"
+                    className={cn(
+                        "absolute z-50 animate-sketch-calendar-fade",
+                        getPlacementClasses(placement),
+                        popoverClassName
+                    )}
+                >
+                    <Calender
+                        key={selected ? "datepicker-selected" : "datepicker-empty"}
+                        value={selected}
+                        onChange={handleSelect}
+                        width={calendarWidth}
+                        variant={variant}
+                        shape={shape}
+                        borderStyle={borderStyle}
+                        borderColor={borderColor}
+                        fillColor={fillColor}
+                        textColor={textColor}
+                        selectedColor={selectedColor}
+                        showShadow={showShadow}
+                        weekStartsOn={weekStartsOn}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                        disabledDates={disabledDates}
+                        isDateDisabled={isDateDisabled}
+                        pageAnimation={pageAnimation}
+                        roughOptions={roughOptions}
+                        className={calendarClassName}
+                    />
+
+                    {clearable && selected && (
+                        <div className="mt-2 flex justify-center">
+                            <button
+                                type="button"
+                                onClick={handleClear}
+                                className={cn(
+                                    "font-family-hand text-sm font-bold text-black/70 underline underline-offset-4 outline-none",
+                                    "hover:text-black focus-visible:ring-2 focus-visible:ring-black",
+                                    clearButtonClassName
+                                )}
+                            >
+                                Clear
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+        </span>
+    )
+}
+```
+
+## Usage
+```tsx
+"use client"
+
+import { useState } from "react"
+import { DatePicker } from "@/components/ui/DatePicker"
+
+export function Example() {
+    const [date, setDate] = useState<Date | undefined>()
+
+    return (
+        <DatePicker
+            value={date}
+            onChange={setDate}
+            variant="yellow"
+            minDate={new Date()}
+        />
+    )
+}
+```
+
+Uncontrolled with a custom label and format:
+```tsx
+<DatePicker
+    defaultValue={new Date(2026, 0, 20)}
+    placeholder="Date of birth"
+    label="Date of birth"
+    formatDate={(date) => date.toISOString().slice(0, 10)}
+    maxDate={new Date()}
+    weekStartsOn={1}
+    pageAnimation="flip"
+/>
+```
+
+## Props
+| Prop | Type | Default | Description |
+|--------|--------|--------|--------|
+| `value` | Date | - | Controlled selected date. Pass `undefined` for no selection. |
+| `defaultValue` | Date | - | Initial selected date in uncontrolled mode. |
+| `onChange` | `(date: Date \| undefined) => void` | - | Called on select and on Clear. |
+| `defaultOpen` | boolean | `false` | Whether the popover starts open. |
+| `placeholder` | string | `"Pick a date"` | Trigger text when no date is selected. |
+| `formatDate` | `(date: Date) => string` | - | Custom trigger label formatter. Defaults to `Month D, YYYY`. |
+| `clearable` | boolean | `true` | Shows a Clear button below the calendar when a date is selected. |
+| `closeOnSelect` | boolean | `true` | Closes the popover after a date is picked. |
+| `label` | string | `"Pick a date"` | Accessible label for the trigger button. |
+| `disabled` | boolean | `false` | Disables the trigger. |
+| `variant` | DatePickerVariant | `"paper"` | Color theme shared by the trigger and calendar. |
+| `shape` | `"rectangle" \| "rounded-rectangle"` | `"rounded-rectangle"` | Shape of the trigger and calendar. |
+| `borderStyle` | `"solid" \| "dashed"` | `"solid"` | Border treatment of the trigger and calendar. |
+| `placement` | DatePickerPlacement | `"bottom-start"` | Popover placement relative to the trigger. |
+| `width` | number \| string | `260` | Trigger width. |
+| `height` | number | `48` | Trigger height. |
+| `calendarWidth` | number \| string | `300` | Width passed to the calendar popover. |
+| `weekStartsOn` | `0 \| 1` | `0` | Sunday (`0`) or Monday (`1`) as the first day of the week. |
+| `minDate` | Date | - | Earliest selectable date. |
+| `maxDate` | Date | - | Latest selectable date. |
+| `disabledDates` | Date[] | - | Explicit list of disabled dates. |
+| `isDateDisabled` | `(date: Date) => boolean` | - | Custom predicate for disabled dates. |
+| `selectedColor` | string | `"#fde047"` | Fill color of the selected day. |
+| `showShadow` | boolean | `false` | Adds the sketch drop shadow to the calendar. |
+| `pageAnimation` | PageAnimation | `"slide"` | Month-change animation: `slide`, `flip`, `fade`, `none`. |
+| `borderColor` | string | `"#111"` | Stroke color of the trigger and calendar. |
+| `fillColor` | string | - | Overrides the variant fill. |
+| `textColor` | string | `"#111"` | Trigger and calendar text color. |
+| `roughOptions` | RoughDatePickerOptions | - | Custom RoughJS rendering configuration for the trigger and calendar. |
+| `className` | string | - | Classes for the outer wrapper. |
+| `triggerClassName` | string | - | Classes for the trigger button. |
+| `popoverClassName` | string | - | Classes for the popover panel. |
+| `calendarClassName` | string | - | Classes for the inner Calender. |
+| `clearButtonClassName` | string | - | Classes for the Clear button. |
+
+## Rough Options
+The `roughOptions` prop customizes the hand-drawn appearance of both the trigger and calendar.
+- `seed` (number): Controls stroke randomness; set it for a stable sketch.
+- `stroke` (string): Stroke color.
+- `strokeWidth` (number): Stroke thickness.
+- `fill` (string): Fill color override.
+- `fillStyle`: `"solid"`, `"hachure"`, `"zigzag"`, `"cross-hatch"`, `"dots"`, `"dashed"`, `"zigzag-line"`.
+- `hachureGap` (number): Gap between hachure strokes.
+- `hachureAngle` (number): Angle of hachure strokes.
+- `roughness` (number): Higher values look sketchier.
+- `bowing` (number): Bending effect of the stroke.
+
+```tsx
+<DatePicker
+    variant="blue"
+    borderStyle="dashed"
+    roughOptions={{
+        seed: 42,
+        fillStyle: "hachure",
+        hachureGap: 4,
+        roughness: 1.6,
+    }}
+/>
+```
+
+## Variants
+- paper
+- white
+- yellow
+- purple
+- green
+- pink
+- blue
+- gray
+- orange
+- red
+- sky
+
+## Shapes
+- rectangle
+- rounded-rectangle
+
+## Border Styles
+- solid
+- dashed
+
+## Placements
+- bottom-start
+- bottom-end
+- top-start
+- top-end
+
+## Accessibility
+The trigger is a real `<button>` with `aria-label`, `aria-haspopup="dialog"`, `aria-expanded`, and `aria-controls`. The popover has `role="dialog"`. Clicking outside or pressing Escape closes it and returns focus to the trigger; ArrowDown opens it from the keyboard. All calendar keyboard and ARIA behavior comes from `Calender`.

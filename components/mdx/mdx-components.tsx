@@ -18,6 +18,8 @@ import { DemoCheckbox } from "../examples/Checkbox-demo"
 import { DemoAlert } from "../examples/Alert-demo"
 import { DemoInput } from "../examples/Input-demo"
 import { DemoTextArea } from "../examples/Textarea-demo"
+import { DemoDatePicker } from "../examples/DatePicker-demo"
+import { DemoAcknowledgementSlideshow } from "../examples/AcknowledgementSlideshow-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -38,6 +40,8 @@ import { Checkbox } from "../ui/Checkbox"
 import { Alert } from "../ui/Alert"
 import { Input } from "../ui/Input"
 import { Textarea } from "../ui/Textarea"
+import { DatePicker } from "../ui/DatePicker"
+import { AcknowledgementSlideshow } from "../ui/AcknowledgementSlideshow"
 import { DemoDoodleGridBackground } from "../examples/DoodleGridBackground-demo"
 import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
@@ -65,7 +69,9 @@ const demos = {
     "combobox-demo": DemoComboBox,
     "alert-demo": DemoAlert,
     "input-demo": DemoInput,
-    "textarea-demo": DemoTextArea
+    "textarea-demo": DemoTextArea,
+    "date-picker-demo": DemoDatePicker,
+    "acknowledgement-slideshow-demo": DemoAcknowledgementSlideshow
 }
 
 type DemoName = keyof typeof demos
@@ -112,6 +118,8 @@ export const mdxComponents = {
     Alert,
     Input,
     Textarea,
+    DatePicker,
+    AcknowledgementSlideshow,
     DemoDoodleGridBackground,
     DemoNotebookBackground,
     Link,

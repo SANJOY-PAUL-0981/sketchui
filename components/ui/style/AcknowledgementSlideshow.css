@@ -1,0 +1,38 @@
+@keyframes sketch-ack-slide-next {
+    from {
+        opacity: 0;
+        transform: translateX(40px) rotate(2deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg);
+    }
+}
+
+@keyframes sketch-ack-slide-prev {
+    from {
+        opacity: 0;
+        transform: translateX(-40px) rotate(-2deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg);
+    }
+}
+
+.sketch-ack-slide-next {
+    animation: sketch-ack-slide-next 500ms ease-out;
+}
+
+.sketch-ack-slide-prev {
+    animation: sketch-ack-slide-prev 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sketch-ack-slide-next,
+    .sketch-ack-slide-prev {
+        animation: none;
+    }
+}

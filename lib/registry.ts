@@ -184,7 +184,23 @@ export const componentRegistry: ComponentRegistryItem[] = [
         description: "A ruled notebook themed window backkground.",
         href: "/docs/components/notebook_background",
         status: "ready",
-        order: 22
+        order: 22,
+    },
+    {
+        name: "DatePicker",
+        slug: "date_picker",
+        description: "A hand-drawn date picker with a sketchy trigger and a Calender popover.",
+        href: "/docs/components/date_picker",
+        status: "ready",
+        order: 23,
+    },
+    {
+        name: "AcknowledgementSlideshow",
+        slug: "acknowledgement_slideshow",
+        description: "A hand-drawn slideshow for acknowledging people, with autoplay, arrows and dots.",
+        href: "/docs/components/acknowledgement_slideshow",
+        status: "ready",
+        order: 24,
     },
 
 ]
