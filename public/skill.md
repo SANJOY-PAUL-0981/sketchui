@@ -61,6 +61,8 @@ All components are imported as `@/components/ui/<File>` and exported as **named*
 | `Calender.tsx` | `Calender` | Interactive calendar (note spelling); imports `ui/style/Calender.css` |
 | `DatePicker.tsx` | `DatePicker` | Sketch trigger + popover wrapping Calender; controlled/uncontrolled, Clear button |
 | `AcknowledgementSlideshow.tsx` | `AcknowledgementSlideshow` | Card-based people slideshow with autoplay, rough arrows and dots |
+| `Navbar.tsx` | `Navbar` | Sticky paper header with links, logo, action, mobile menu and wavy underline |
+| `FloatingDock.tsx` | `FloatingDock` | Standalone macOS-style dock with rough icon circles, cursor magnification and tooltips |
 | `HoverCard.tsx` | `HoverCard` | Hover/focus card with 8 placements, arrow, shadow |
 | `Loader.tsx` | `Loader` | CSS-animated `dots`/`spinner`; imports `ui/style/Loader.css` |
 | `SectionTitle.tsx` | `SectionTitle` | Heading with optional `icon`/`subtitle` |
@@ -75,7 +77,7 @@ All components are imported as `@/components/ui/<File>` and exported as **named*
 | `DoodleGridBackground.tsx` | `DoodleGridBackground` | Full-page grid background; `density="low"\|"medium"\|"high"` |
 | `NotebookBackground.tsx` | `NotebookBackground` | Ruled background; `showMarginLine` |
 
-`lib/registry.ts` is the authoritative "ready" list of these 24. Files ending in `X.tsx` (`AuthFormX`, `RadioX`, `SelectX`, `SidebarX`, `SketchChartX`, etc.) are **empty placeholders**; the matching docs and demos without `status: ready` are empty stubs too. Do not import them.
+`lib/registry.ts` is the authoritative "ready" list of these 26. Files ending in `X.tsx` (`AuthFormX`, `RadioX`, `SelectX`, `SidebarX`, `SketchChartX`, etc.) are **empty placeholders**; the matching docs and demos without `status: ready` are empty stubs too. Do not import them.
 
 ### Key defaults
 
@@ -89,6 +91,8 @@ All components are imported as `@/components/ui/<File>` and exported as **named*
 - `Calender`: width `360`, variant `paper`, borderStyle `dashed`, pageAnimation `slide`, weekStartsOn `0`. Controlled via `value`/`month`, uncontrolled via `defaultValue`/`defaultMonth`.
 - `DatePicker`: trigger width `260`/height `48`, calendarWidth `300`, variant `paper`, borderStyle `solid`, placement `bottom-start`, `clearable`/`closeOnSelect` on. Controlled via `value`, uncontrolled via `defaultValue`; `onChange` also receives `undefined` from Clear.
 - `AcknowledgementSlideshow`: card width `100%`/height `280`, variant `paper`, borderStyle `rough`, `autoPlay` 4000ms, `loop`/arrows/dots/quote on; controlled via `activeIndex`, uncontrolled via `defaultActiveIndex`, CSS in `ui/style/AcknowledgementSlideshow.css`.
+- `Navbar`: sticky paper header, variant `paper`, wavy underline + mobile menu + optional action on by default; set `sticky={false}` for inline previews.
+- `FloatingDock`: variant `paper`, fixed bottom, `magnify` on with radius `140`/amount `0.45`, 56px rough icon circles. Set `fixed={false}` for inline previews.
 - `HoverCard`: width `280`, maxWidth `340`, placement `top`, padding `18`, `rotate=-1`, arrow off.
 - `Tooltip`: width `max-content`, maxWidth `260`, paddingX `14`/paddingY `10`, delay `120`.
 - `Toggle`: size `md` (44px height, width = height × 1.9), checked `#86efac`, unchecked `#e5e7eb`.

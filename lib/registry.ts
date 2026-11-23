@@ -202,5 +202,21 @@ export const componentRegistry: ComponentRegistryItem[] = [
         status: "ready",
         order: 24,
     },
+    {
+        name: "Navbar",
+        slug: "navbar",
+        description: "A sketch-themed sticky header with links, a logo, a mobile menu and a wavy underline.",
+        href: "/docs/components/navbar",
+        status: "ready",
+        order: 25,
+    },
+    {
+        name: "FloatingDock",
+        slug: "floating_dock",
+        description: "A macOS-style floating dock with rough-drawn icons that magnify toward the cursor.",
+        href: "/docs/components/floating_dock",
+        status: "ready",
+        order: 26,
+    },
 
 ]

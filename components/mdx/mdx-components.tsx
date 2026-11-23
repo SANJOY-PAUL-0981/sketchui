@@ -20,6 +20,8 @@ import { DemoInput } from "../examples/Input-demo"
 import { DemoTextArea } from "../examples/Textarea-demo"
 import { DemoDatePicker } from "../examples/DatePicker-demo"
 import { DemoAcknowledgementSlideshow } from "../examples/AcknowledgementSlideshow-demo"
+import { DemoNavbar } from "../examples/Navbar-demo"
+import { DemoFloatingDock } from "../examples/FloatingDock-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -42,6 +44,8 @@ import { Input } from "../ui/Input"
 import { Textarea } from "../ui/Textarea"
 import { DatePicker } from "../ui/DatePicker"
 import { AcknowledgementSlideshow } from "../ui/AcknowledgementSlideshow"
+import { Navbar } from "../ui/Navbar"
+import { FloatingDock } from "../ui/FloatingDock"
 import { DemoDoodleGridBackground } from "../examples/DoodleGridBackground-demo"
 import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
@@ -71,7 +75,9 @@ const demos = {
     "input-demo": DemoInput,
     "textarea-demo": DemoTextArea,
     "date-picker-demo": DemoDatePicker,
-    "acknowledgement-slideshow-demo": DemoAcknowledgementSlideshow
+    "acknowledgement-slideshow-demo": DemoAcknowledgementSlideshow,
+    "navbar-demo": DemoNavbar,
+    "floating-dock-demo": DemoFloatingDock
 }
 
 type DemoName = keyof typeof demos
@@ -120,6 +126,8 @@ export const mdxComponents = {
     Textarea,
     DatePicker,
     AcknowledgementSlideshow,
+    Navbar,
+    FloatingDock,
     DemoDoodleGridBackground,
     DemoNotebookBackground,
     Link,

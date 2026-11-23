@@ -1,0 +1,325 @@
+---
+title: Navbar
+description: A sketch-themed sticky header with links, a logo, a mobile menu and a wavy RoughJS underline.
+category: Components
+status: ready
+order: 25
+---
+
+<ComponentPreview name="navbar-demo" />
+
+Navbar is the standard top navigation. It renders a pastel paper header with a sketchy wavy underline, optional logo and action, and a responsive mobile menu built from a [Card](/docs/components/card). For the macOS-style floating dock, use [FloatingDock](/docs/components/floating_dock) instead.
+
+## Code
+```tsx
+"use client"
+
+import { useState, type ReactNode } from "react"
+import Link from "next/link"
+import { Menu, X } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Card } from "./Card"
+import { Seperator } from "./Separator"
+
+export type NavbarItem = {
+    label: string
+    href: string
+    icon?: ReactNode
+    external?: boolean
+}
+
+type NavbarVariant =
+    | "paper"
+    | "white"
+    | "yellow"
+    | "purple"
+    | "green"
+    | "pink"
+    | "blue"
+    | "gray"
+    | "orange"
+    | "red"
+    | "sky"
+
+type RoughNavbarOptions = {
+    seed?: number
+    stroke?: string
+    strokeWidth?: number
+    fill?: string
+    fillStyle?: "solid" | "hachure" | "zigzag" | "cross-hatch" | "dots" | "dashed" | "zigzag-line"
+    hachureGap?: number
+    hachureAngle?: number
+    roughness?: number
+    bowing?: number
+}
+
+type NavbarProps = {
+    items: NavbarItem[]
+    logo?: ReactNode
+    action?: ReactNode
+    variant?: NavbarVariant
+
+    sticky?: boolean
+    showBottomLine?: boolean
+    showMobileMenu?: boolean
+
+    className?: string
+    navClassName?: string
+    linkClassName?: string
+    actionClassName?: string
+
+    roughOptions?: RoughNavbarOptions
+}
+
+const colors: Record<NavbarVariant, string> = {
+    paper: "#fffbf2",
+    white: "#ffffff",
+    yellow: "#fef3c7",
+    purple: "#d8c7ff",
+    green: "#bbf7d0",
+    pink: "#fbcfe8",
+    blue: "#bfdbfe",
+    gray: "#e5e7eb",
+    orange: "#fed7aa",
+    red: "#fecaca",
+    sky: "#bae6fd",
+}
+
+function NavbarLink({
+    item,
+    onNavigate,
+    className,
+}: {
+    item: NavbarItem
+    onNavigate?: () => void
+    className?: string
+}) {
+    const content = (
+        <>
+            {item.icon && <span className="inline-flex shrink-0">{item.icon}</span>}
+            <span>{item.label}</span>
+        </>
+    )
+
+    if (item.external) {
+        return (
+            <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={onNavigate}
+                className={className}
+            >
+                {content}
+            </a>
+        )
+    }
+
+    return (
+        <Link href={item.href} onClick={onNavigate} className={className}>
+            {content}
+        </Link>
+    )
+}
+
+export function Navbar({
+    items,
+    logo,
+    action,
+    variant = "paper",
+    sticky = true,
+    showBottomLine = true,
+    showMobileMenu = true,
+    className,
+    navClassName,
+    linkClassName,
+    actionClassName,
+    roughOptions,
+}: NavbarProps) {
+    const [isOpen, setIsOpen] = useState(false)
+
+    const linkClasses = cn(
+        "inline-flex items-center gap-2 font-family-hand text-lg font-bold text-black",
+        "transition-transform duration-150 hover:-rotate-2 hover:scale-105",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black",
+        linkClassName
+    )
+
+    return (
+        <header
+            className={cn(
+                "z-50 w-full px-6 py-4 font-family-hand max-md:px-4 max-md:py-3",
+                sticky ? "sticky top-0" : "relative",
+                className
+            )}
+            style={{ backgroundColor: colors[variant] }}
+        >
+            <nav
+                aria-label="Main navigation"
+                className={cn(
+                    "mx-auto flex max-w-7xl items-center justify-between gap-4",
+                    navClassName
+                )}
+            >
+                {logo ?? (
+                    <Link
+                        href="/"
+                        className="font-family-hand text-xl font-black text-black"
+                    >
+                        SketchUI
+                    </Link>
+                )}
+
+                <div className="hidden items-center gap-8 max-lg:gap-5 max-md:hidden">
+                    {items.map((item) => (
+                        <NavbarLink
+                            key={`${item.label}-${item.href}`}
+                            item={item}
+                            className={linkClasses}
+                        />
+                    ))}
+
+                    {action && <div className={actionClassName}>{action}</div>}
+                </div>
+
+                {showMobileMenu && (
+                    <button
+                        type="button"
+                        onClick={() => setIsOpen((prev) => !prev)}
+                        aria-label="Toggle menu"
+                        aria-expanded={isOpen}
+                        className={cn(
+                            "inline-flex rounded-lg border-2 border-black bg-white/70 p-2 text-black",
+                            "outline-none transition-transform active:scale-95",
+                            "focus-visible:ring-2 focus-visible:ring-black",
+                            "max-md:inline-flex md:hidden"
+                        )}
+                    >
+                        {isOpen ? <X size={22} /> : <Menu size={22} />}
+                    </button>
+                )}
+            </nav>
+
+            {showMobileMenu && isOpen && (
+                <Card
+                    variant={variant === "white" ? "paper" : variant}
+                    height="auto"
+                    className="mt-4 md:hidden"
+                    roughOptions={roughOptions}
+                >
+                    <div className="grid gap-3">
+                        {items.map((item) => (
+                            <NavbarLink
+                                key={`${item.label}-${item.href}`}
+                                item={item}
+                                onNavigate={() => setIsOpen(false)}
+                                className={cn(
+                                    linkClasses,
+                                    "w-full justify-center rounded-lg border-2 border-black bg-white/60 px-4 py-3"
+                                )}
+                            />
+                        ))}
+
+                        {action && (
+                            <div className={cn("mt-1", actionClassName)}>
+                                {action}
+                            </div>
+                        )}
+                    </div>
+                </Card>
+            )}
+
+            {showBottomLine && (
+                <Seperator
+                    variant="wavy"
+                    length="100%"
+                    thickness={16}
+                    color="#111"
+                    className="absolute bottom-0 left-0 translate-y-1/2"
+                    roughOptions={roughOptions}
+                />
+            )}
+        </header>
+    )
+}
+```
+
+## Usage
+```tsx
+import { Navbar, type NavbarItem } from "@/components/ui/Navbar"
+import { Button } from "@/components/ui/Button"
+
+const items: NavbarItem[] = [
+    { label: "Home", href: "/" },
+    { label: "Docs", href: "/docs/getting-started/introduction" },
+    {
+        label: "GitHub",
+        href: "https://github.com/SANJOY-PAUL-0981/sketchui",
+        external: true,
+    },
+]
+
+export function Example() {
+    return (
+        <Navbar
+            items={items}
+            variant="yellow"
+            logo={<span className="font-family-hand text-xl font-black">SketchUI</span>}
+            action={<Button variant="pink" height={44}>Get started</Button>}
+        />
+    )
+}
+```
+
+## Props
+| Prop | Type | Default | Description |
+|--------|--------|--------|--------|
+| `items` | NavbarItem[] | - | Links: `{ label, href, icon?, external? }`. |
+| `logo` | ReactNode | `"SketchUI"` text | Custom brand element. |
+| `action` | ReactNode | - | Trailing action, e.g. a Button. Also shown in the mobile menu. |
+| `variant` | NavbarVariant | `"paper"` | Pastel color theme for the header background. |
+| `sticky` | boolean | `true` | Sticks the header to the top of the viewport. |
+| `showBottomLine` | boolean | `true` | Shows the rough wavy underline. |
+| `showMobileMenu` | boolean | `true` | Shows the hamburger menu on small screens. |
+| `roughOptions` | RoughNavbarOptions | - | Custom RoughJS rendering configuration for the underline and mobile card. |
+| `className` | string | - | Classes for the header wrapper. |
+| `navClassName` | string | - | Classes for the `<nav>`. |
+| `linkClassName` | string | - | Classes for each link. |
+| `actionClassName` | string | - | Classes around the action element. |
+
+## Rough Options
+The `roughOptions` prop customizes the wavy underline and the mobile-menu card.
+- `seed` (number): Controls stroke randomness; set it for a stable sketch.
+- `stroke` (string): Stroke color.
+- `strokeWidth` (number): Stroke thickness.
+- `fill` (string): Fill color override.
+- `fillStyle`: `"solid"`, `"hachure"`, `"zigzag"`, `"cross-hatch"`, `"dots"`, `"dashed"`, `"zigzag-line"`.
+- `hachureGap` (number): Gap between hachure strokes.
+- `hachureAngle` (number): Angle of hachure strokes.
+- `roughness` (number): Higher values look sketchier.
+- `bowing` (number): Bending effect of the stroke.
+
+```tsx
+<Navbar
+    items={items}
+    variant="green"
+    roughOptions={{ roughness: 0.8, strokeWidth: 1.6 }}
+/>
+```
+
+## Variants
+- paper
+- white
+- yellow
+- purple
+- green
+- pink
+- blue
+- gray
+- orange
+- red
+- sky
+
+## Accessibility
+The component renders a semantic `<header>` and `<nav aria-label="Main navigation">`. Links use Next.js `Link` or an `<a>` for `external` items, and the mobile toggle exposes `aria-expanded`. Focus rings are visible on all interactive elements.
