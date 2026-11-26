@@ -63,6 +63,8 @@ All components are imported as `@/components/ui/<File>` and exported as **named*
 | `AcknowledgementSlideshow.tsx` | `AcknowledgementSlideshow` | Card-based people slideshow with autoplay, rough arrows and dots |
 | `Navbar.tsx` | `Navbar` | Sticky paper header with links, logo, action, mobile menu and wavy underline |
 | `FloatingDock.tsx` | `FloatingDock` | Standalone macOS-style dock with rough icon circles, cursor magnification and tooltips |
+| `Progressbar.tsx` | `Progressbar` | Rough progress bar with staggered pencil-stroke draw animation and clipped hachure fill |
+| `RadioGroup.tsx` | `RadioGroup` | Native radio inputs with RoughJS circles, descriptions, controlled/uncontrolled selection |
 | `HoverCard.tsx` | `HoverCard` | Hover/focus card with 8 placements, arrow, shadow |
 | `Loader.tsx` | `Loader` | CSS-animated `dots`/`spinner`; imports `ui/style/Loader.css` |
 | `SectionTitle.tsx` | `SectionTitle` | Heading with optional `icon`/`subtitle` |
@@ -77,7 +79,7 @@ All components are imported as `@/components/ui/<File>` and exported as **named*
 | `DoodleGridBackground.tsx` | `DoodleGridBackground` | Full-page grid background; `density="low"\|"medium"\|"high"` |
 | `NotebookBackground.tsx` | `NotebookBackground` | Ruled background; `showMarginLine` |
 
-`lib/registry.ts` is the authoritative "ready" list of these 26. Files ending in `X.tsx` (`AuthFormX`, `RadioX`, `SelectX`, `SidebarX`, `SketchChartX`, etc.) are **empty placeholders**; the matching docs and demos without `status: ready` are empty stubs too. Do not import them.
+`lib/registry.ts` is the authoritative "ready" list of these 28. Files ending in `X.tsx` (`AuthFormX`, `RadioX`, `SelectX`, `SidebarX`, `SketchChartX`, etc.) are **empty placeholders**; the matching docs and demos without `status: ready` are empty stubs too. Do not import them.
 
 ### Key defaults
 
@@ -93,6 +95,8 @@ All components are imported as `@/components/ui/<File>` and exported as **named*
 - `AcknowledgementSlideshow`: card width `100%`/height `280`, variant `paper`, borderStyle `rough`, `autoPlay` 4000ms, `loop`/arrows/dots/quote on; controlled via `activeIndex`, uncontrolled via `defaultActiveIndex`, CSS in `ui/style/AcknowledgementSlideshow.css`.
 - `Navbar`: sticky paper header, variant `paper`, wavy underline + mobile menu + optional action on by default; set `sticky={false}` for inline previews.
 - `FloatingDock`: variant `paper`, fixed bottom, `magnify` on with radius `140`/amount `0.45`, 56px rough icon circles. Set `fixed={false}` for inline previews.
+- `Progressbar`: `value`/`max` = `0`/`100`, variant `green`, `fillStyle="hachure"`, height `28`, animation `duration=900`/`delay=100`/`stagger=45`; `animateOnChange` replays stroke animation on value changes, `showReplay` adds a redraw button.
+- `RadioGroup`: items `{value,label,description?,disabled?}`, variant `paper`, shape `circle`/`rounded`, size `md` (22/28/36), vertical; controlled via `value`, uncontrolled via `defaultValue`; native radio semantics, no animation.
 - `HoverCard`: width `280`, maxWidth `340`, placement `top`, padding `18`, `rotate=-1`, arrow off.
 - `Tooltip`: width `max-content`, maxWidth `260`, paddingX `14`/paddingY `10`, delay `120`.
 - `Toggle`: size `md` (44px height, width = height × 1.9), checked `#86efac`, unchecked `#e5e7eb`.

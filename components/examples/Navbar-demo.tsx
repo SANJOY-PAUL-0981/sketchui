@@ -34,7 +34,7 @@ export function DemoNavbar() {
     return (
         <div className="flex w-full flex-col gap-12">
             <div>
-                <p className="mb-3 font-family-hand text-lg font-bold">
+                <p className="mb-3 pl-5 font-family-hand text-lg font-bold">
                     Classic paper
                 </p>
                 <Navbar

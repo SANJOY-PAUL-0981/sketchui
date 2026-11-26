@@ -218,5 +218,21 @@ export const componentRegistry: ComponentRegistryItem[] = [
         status: "ready",
         order: 26,
     },
+    {
+        name: "Progressbar",
+        slug: "progressbar",
+        description: "A hand-drawn progress bar with animated pencil-stroke shading.",
+        href: "/docs/components/progressbar",
+        status: "ready",
+        order: 27,
+    },
+    {
+        name: "RadioGroup",
+        slug: "radio_group",
+        description: "A hand-drawn radio group with native inputs and RoughJS circles.",
+        href: "/docs/components/radio_group",
+        status: "ready",
+        order: 28,
+    },
 
 ]

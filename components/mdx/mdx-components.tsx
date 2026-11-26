@@ -22,6 +22,8 @@ import { DemoDatePicker } from "../examples/DatePicker-demo"
 import { DemoAcknowledgementSlideshow } from "../examples/AcknowledgementSlideshow-demo"
 import { DemoNavbar } from "../examples/Navbar-demo"
 import { DemoFloatingDock } from "../examples/FloatingDock-demo"
+import { DemoProgressbar } from "../examples/Progressbar-demo"
+import { DemoRadioGroup } from "../examples/RadioGroup-demo"
 
 import { Avatar } from "../ui/Avatar"
 import { Badge } from "../ui/Badge"
@@ -46,6 +48,8 @@ import { DatePicker } from "../ui/DatePicker"
 import { AcknowledgementSlideshow } from "../ui/AcknowledgementSlideshow"
 import { Navbar } from "../ui/Navbar"
 import { FloatingDock } from "../ui/FloatingDock"
+import { Progressbar } from "../ui/Progressbar"
+import { RadioGroup } from "../ui/RadioGroup"
 import { DemoDoodleGridBackground } from "../examples/DoodleGridBackground-demo"
 import { DemoNotebookBackground } from "../examples/NotebookBackground-demo"
 
@@ -77,7 +81,9 @@ const demos = {
     "date-picker-demo": DemoDatePicker,
     "acknowledgement-slideshow-demo": DemoAcknowledgementSlideshow,
     "navbar-demo": DemoNavbar,
-    "floating-dock-demo": DemoFloatingDock
+    "floating-dock-demo": DemoFloatingDock,
+    "progressbar-demo": DemoProgressbar,
+    "radio-group-demo": DemoRadioGroup
 }
 
 type DemoName = keyof typeof demos
@@ -128,6 +134,8 @@ export const mdxComponents = {
     AcknowledgementSlideshow,
     Navbar,
     FloatingDock,
+    Progressbar,
+    RadioGroup,
     DemoDoodleGridBackground,
     DemoNotebookBackground,
     Link,
